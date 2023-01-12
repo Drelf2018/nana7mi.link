@@ -1,5 +1,6 @@
 <template>
   <div class="hello">
+    <img alt="Vue logo" src="../assets/logo.png">
     <h1>{{ msg }}</h1>
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
@@ -27,6 +28,12 @@
       <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
     </ul>
+    <div v-for="i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
+      <h3>Test{{ i }}</h3>
+      <ul>
+        <li v-for="j in ['aa', 'bb', 'cc', 'dd', 'ee']"><a href="/">vue-{{ j }}-{{ i }}</a></li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -41,6 +48,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+/* .hello {
+  background-color: #cae8ca;
+  border: 2px solid #4CAF50;
+} */
+
 h3 {
   margin: 40px 0 0;
 }

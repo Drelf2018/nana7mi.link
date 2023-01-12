@@ -1,0 +1,19 @@
+@font-face {
+    font-family: 'HarmonyOS_Bold';
+    src: url('https://danmu.nana7mi.link/HarmonyOS_Sans_SC_Bold.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    margin: 0;
+}
+
+#app {
+    font-family: HarmonyOS_Bold, Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 60px;
+}
