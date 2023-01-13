@@ -1,0 +1,171 @@
+<template>
+    <div class="swiper-container" @mouseenter="stop" @mouseleave="start">
+        <div class="swiper-hidden">
+            <div :class="[keepMove ^ (selected == 1 ? 1 : 0) ? 'swiper-scroll-back' : 'swiper-scroll-move', 'swiper-scroll']" :style="`left: ${(selected-1)*-100}%`">
+                <a v-for="pic in pictures" :href="pic.link">
+                    <div class="blur-image" :style="`width: ${width};background-image: url(${pic.url});`"></div>
+                    <img :src="pic.url" />
+                </a>
+            </div>
+        </div>
+        <div class="dotList">
+            <div class="dot" v-for="i in pictures.length - 1" :style="selected == i ? 'opacity: 1;' : 'opacity: 0.5;'"></div>
+        </div>
+        <ion-icon name="chevron-back-circle" class="btn" style="left: 16px" @click="move(-1)"></ion-icon>
+        <ion-icon name="chevron-forward-circle" class="btn" style="right: 16px" @click="move(1)"></ion-icon>
+    </div>
+</template>
+
+<script lang="ts">
+interface Picture {
+    url: string
+    link: string
+}
+
+import { ref, getCurrentInstance, onMounted } from 'vue'
+
+export default {
+    props: {
+        speed: String,
+        width: String,
+        banner: Array<Picture>
+    },
+    setup(props) {
+        const pictures = props.banner
+        pictures.push(pictures[0])
+
+        const keepMove = ref(0)
+        const selected = ref(1)
+        const cns = getCurrentInstance()
+        const move: Function = cns.appContext.config.globalProperties.$throttle(moveNow, 550)
+        
+        let timer: NodeJS.Timer = null
+
+        onMounted(start)
+        
+
+        function stop() {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+
+        function start() {
+            timer = setInterval(() => {
+                selected.value += 1
+                if (selected.value >= pictures.length)
+                    setTimeout(() => selected.value = 1, 505)
+            }, parseInt(props.speed))
+        }
+
+        function moveNow(fro: number) {
+            stop()
+            if (fro == 1 && selected.value == pictures.length - 1) setTimeout(() => selected.value = 1, 505)
+            else if (fro == -1) {
+                if (selected.value == 2) {
+                    keepMove.value = 1
+                    setTimeout(() => keepMove.value = 0, 505)
+                }
+                else if (selected.value == 1) {
+                    keepMove.value = 1
+                    selected.value = pictures.length
+                    setTimeout(() => {
+                        keepMove.value = 0
+                        selected.value -= 1
+                    }, 5)
+                    return
+                }
+            }
+            selected.value += fro
+        }
+
+        return { keepMove, selected, pictures, stop, start, move }
+    }
+}
+</script>
+
+<style scoped>
+.swiper-container {
+    border-radius: 5px;
+}
+
+.btn {
+    color: #F5F5F7;
+    font-size: 40px;
+    height: 20%;
+    top: 40%;
+    position: absolute;
+    cursor: pointer;
+    transition: all 0.3s;
+    opacity: 0;
+}
+
+.dotList {
+    position: absolute;
+    display: flex;
+    bottom: 1.5em;
+    right: 1.5em;
+    opacity: 0.75;
+    transition: all 0.3s;
+}
+
+.dot {
+    background-color: white;
+    width: 1em;
+    height: 1em;
+    border-radius: 0.5em;
+    margin-left: 0.5em;
+    transition: all 0.3s;
+    box-shadow: 0 2px 3px grey;
+}
+
+.swiper-container:hover .btn {
+    opacity: 0.75;
+}
+
+.btn:hover {
+    opacity: 1 !important;
+}
+
+.swiper-container:hover .dotList {
+    opacity: 1;
+}
+
+.swiper-hidden {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+}
+
+.swiper-scroll {
+    position: relative;
+    display: flex;
+}
+
+.swiper-scroll-move {
+    transition: all 0.5s;
+}
+
+.swiper-scroll-back {
+    transition: none;
+}
+
+.blur-image {
+    height: 100%;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    filter: blur(5px);
+    opacity: 0.5;
+}
+
+img {
+    position: relative;
+    top: -50%;
+    transform: translateY(-50%);
+    width: 100%;
+    vertical-align: middle;
+}
+</style>

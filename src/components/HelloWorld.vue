@@ -1,9 +1,10 @@
 <template>
-  <div class="bg" :style="imageState"></div>
+  <div class="bg"></div>
   <div class="content">
     <div class="date">
-      <div class="shadow-container" style="font-size: 3em;">你好<br />李鑫</div>
-      <div class="shadow-container" style="font-size: 3em;">你好<br />李鑫</div>
+      <div class="shadow-container">
+        <Swiper speed=2000 width="236px" :banner="banner"></Swiper>
+      </div>
       <div class="shadow-container" style="font-size: 3em;">你好<br />李鑫</div>
     </div>
     <div class="post">
@@ -54,7 +55,7 @@
     </div>
     <div class="date">
       <div class="shadow-container" style="font-size: 3em;">日期</div>
-      <div class="btn shadow-container" @click="shiftBackground" style="width: max-content;">切换背景</div>
+      <div class="btn shadow-container" style="width: max-content;">切换背景</div>
     </div>
   </div>
 
@@ -62,17 +63,40 @@
 
 <script>
 import { ref } from 'vue'
+import Swiper from './Swiper.vue'
 
 export default {
+  components: {
+    Swiper
+  },
   setup() {
-    const imageUrl = "background-image: url(//s1.hdslb.com/bfs/static/stone-free/dyn-home/assets/background.png);"
-    const imageState = ref(imageUrl)
-
-    function shiftBackground() {
-      imageState.value = imageState.value == imageUrl ? "background-color: rgb(246,248,250);" : imageUrl
-    }
-
-    return { imageState, shiftBackground }
+    const banner = ref([
+      {
+        link: "https://www.bilibili.com/video/BV1vJ411B7ng",
+        url: "https://i2.hdslb.com/bfs/archive/7fe8272ef4c90d07ba2dba968638392f8d5bf490.jpg"
+      },
+      {
+        link: "https://www.bilibili.com/video/BV1he4y1r79x",
+        url: "https://i1.hdslb.com/bfs/archive/ca796b3fe2a213c652ebb32469d81511036c7117.jpg"
+      },
+      {
+        link: "https://www.bilibili.com/video/BV1tG411g7Fo",
+        url: "https://i0.hdslb.com/bfs/archive/b7868c38077aaa66e233499723a4d7490804f861.png"
+      },
+      {
+        link: "https://www.bilibili.com/video/BV1T24y1R7wd",
+        url: "https://i1.hdslb.com/bfs/archive/ab9738d7aee96044183b61c7dd9c95eb1ec17ed1.jpg"
+      },
+      {
+        link: "https://www.bilibili.com/video/BV1pR4y1W7M7",
+        url: "https://i0.hdslb.com/bfs/new_dyn/8b90b7582c6fa3023eda3ffb58bf8eeb1464240042.png"
+      },
+      {
+        link: "",
+        url: "src/assets/logo.png"
+      }
+    ])
+    return { banner }
   }
 }
 </script>
@@ -87,6 +111,7 @@ export default {
   width: 100%;
   height: 100vw;
   transform: translateX(-50%);
+  background-color: rgb(246,248,250);
   background-repeat: no-repeat;
   background-size: contain;
   background-position: top;
