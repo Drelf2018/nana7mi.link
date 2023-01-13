@@ -5,7 +5,7 @@ export default defineConfig({
     plugins: [vue()],
     //静态资源服务的文件夹
     publicDir: "public",
-    base: './',
+    base: '/',
     // 打包配置 npm run build
     build:{
         //指定输出路径
