@@ -1,5 +1,5 @@
 <template>
-  <Nav src="/bg.png" height="155px"></Nav>
+  <Nav src="/background.webp" height="155px"></Nav>
   <router-view />
 </template>
 
