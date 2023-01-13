@@ -37,11 +37,12 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .nav-container {
-  height: calc(var(--height) - 64px);
+  height: calc(var(--height) - 64px + 4px);
 }
 
 .nav-header {
   position: fixed;
+  z-index: 2;
   top: 0;
   width: 100%;
   height: 64px;
