@@ -21,9 +21,9 @@ export default defineConfig({
         //自定义底层的 Rollup 打包配置
         rollupOptions: {
             output:{
-                chunkFileNames:'static/[name]-[hash].js',
-                entryFileNames:"static/[name]-[hash].js",
-                assetFileNames:"static/[name]-[hash].[ext]"
+                chunkFileNames:'static/[name].[hash].js',
+                entryFileNames:"static/[name].[hash].js",
+                assetFileNames:"static/[name].[hash].[ext]"
             }
         },
         //默认情况下，若 outDir 在 root 目录下，则 Vite 会在构建时清空该目录。

@@ -50,7 +50,7 @@ export default {
   align-items: center;
   color: white;
   text-shadow: 0px 1px 3px black;
-  transition: background-color 0.25s;
+  transition: background-color 0.2s;
 }
 
 .nav-covered {

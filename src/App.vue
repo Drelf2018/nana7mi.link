@@ -1,5 +1,5 @@
 <template>
-  <Nav src="https://danmu.nana7mi.link/bg.png" height="155px"></Nav>
+  <Nav src="/bg.png" height="155px"></Nav>
   <router-view />
 </template>
 
