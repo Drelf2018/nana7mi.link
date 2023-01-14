@@ -1,13 +1,13 @@
 @font-face {
     font-family: 'HarmonyOS_Bold';
-    src: url('/HarmonyOS_Sans_SC_Bold.ttf');
+    src: url('https://yun.nana7mi.link/HarmonyOS_Sans_SC_Bold.ttf');
     font-weight: normal;
     font-style: normal;
 }
 
 body {
     margin: 0;
-    overflow: scroll;
+    overflow-y: scroll;
 }
 
 #app {
@@ -16,6 +16,6 @@ body {
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
-    margin-top: 60px;
-    background-color: rgb(246,248,250);
+    min-height: 100vh;
+    transition: background-color 0.2s;
 }

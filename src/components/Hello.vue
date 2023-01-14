@@ -1,13 +1,12 @@
 <template>
-  <div class="content">
+  <div :class="['content', `view-${theme.theme}`]">
     <div class="tool">
       <div class="date shadow-container" style="font-size: 3em;">日期</div>
-      <div class="btn shadow-container" onclick="alert('你在切你吗呢')">切换主题</div>
+      <div class="btn shadow-container" @click="theme.modifyTheme">切换主题</div>
     </div>
-    
     <div class="post">
       <div class="shadow-container">
-        <img alt="Vue logo" src="../assets/logo.png">
+        <img src="https://yun.nana7mi.link/bg.png" style="max-width: 400px">
         <h1>{{ msg }}</h1>
         <p>
           For a guide and recipes on how to configure / customize this project,<br>
@@ -52,23 +51,31 @@
       </div>
     </div>
     <div class="sider">
-      <div class="shadow-container" style="padding:0">
+      <div class="shadow-container" :style="`padding:0;opacity:${theme.theme == 'light' ? '1' : '0.5'}`">
         <Swiper speed=2000 width="268px" :banner="banner" />
       </div>
       <div class="shadow-container" style="font-size: 3em;">你好<br />李鑫</div>
     </div>
   </div>
-
 </template>
 
 <script lang="ts">
-import { ref } from 'vue'
+interface Theme {
+  theme: String
+  setBackgroundColor: Function
+  modifyTheme: Function
+}
+
+import { ref, PropType } from 'vue'
 import axios from 'axios'
 import Swiper, { Picture } from './Swiper.vue'
 
 export default {
   components: { Swiper },
-  async setup() {
+  props: { 
+    theme: Object as PropType<Theme>
+  },
+  async setup(props) {
 
     async function getPic(bvid: string) {
       let res = await axios.get(`https://aliyun.nana7mi.link/video.Video(${bvid}).get_info().pic?max_age=2592000`)
@@ -96,7 +103,7 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+<!-- Add "scoped" attribute to limit CSS to this component only  -->
 <style scoped>
 .shadow-container {
   position: relative;
@@ -104,8 +111,18 @@ export default {
   padding: 16px;
   margin: 8px 4px;
   border-radius: 5px;
+  transition: all 0.2s;
+}
+
+.view-light div .shadow-container {
   background-color: #FFF;
-  box-shadow: 0 3px 1px -2px rgb(0 0 0 / 12%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 20%)
+  box-shadow: 0 3px 1px -2px rgb(0 0 0 / 12%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 20%);
+}
+
+.view-dark div .shadow-container {
+  color: rgb(201, 209, 217);
+  background-color: rgb(13, 17, 23);
+  box-shadow: inset 0 0 0 1px rgb(48, 54, 61);
 }
 
 .post {
@@ -122,12 +139,14 @@ export default {
   width: max-content;
   left: 100%;
   transform: translateX(calc(-100% - 8px));
+  -webkit-user-select: none;
+  user-select: none;
 }
 
-.btn:hover {
-  background-color: rgb(245, 245, 245);
-  box-shadow: 0 1px 3px grey;
-}
+/* .btn:hover {
+  background-color: rgb(245, 245, 245) !important;
+  box-shadow: 0 1px 3px grey !important;
+} */
 
 .content {
   display: flex;

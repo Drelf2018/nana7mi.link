@@ -37,7 +37,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .nav-container {
-  height: calc(var(--height) - 64px + 4px);
+  height: var(--height);
 }
 
 .nav-header {
@@ -49,16 +49,31 @@ export default {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  color: white;
-  text-shadow: 0px 1px 3px black;
   transition: background-color 0.2s;
 }
 
-.nav-covered {
+.nav-light .nav-header {
+  color: white;
+  text-shadow: 0px 1px 3px black;
+}
+
+.nav-dark .nav-header {
+  color: black;
+  /* text-shadow: 0px 1px 3px black; */
+}
+
+.nav-light .nav-covered {
   color: black;
   text-shadow: none;
   background-color: white;
   box-shadow: inset 0 -1px hsl(210, 8%, 80%);
+}
+
+.nav-dark .nav-covered {
+  color: white;
+  text-shadow: none;
+  background-color: rgb(22, 27, 34);
+  /* box-shadow: inset 0 -1px hsl(210, 8%, 80%); */
 }
 
 .nav-picture {
@@ -69,6 +84,11 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  transition: opacity 0.2s;
+}
+
+.nav-dark .nav-picture {
+  opacity: 0.5;
 }
 
 @media screen and (max-width: 1200px) {
