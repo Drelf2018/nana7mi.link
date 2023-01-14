@@ -9,15 +9,15 @@
             </div>
         </div>
         <div class="dotList">
-            <div class="dot" v-for="i in pictures.length - 1" :style="selected == i ? 'opacity: 1;' : 'opacity: 0.5;'"></div>
+            <div class="dot" v-for="i in pictures.length - 1" :style="selected == i ? 'opacity: 1;' : 'opacity: 0.5;'" @click="tp(i)"></div>
         </div>
-        <ion-icon name="chevron-back-circle" class="btn" style="left: 16px" @click="move(-1)"></ion-icon>
-        <ion-icon name="chevron-forward-circle" class="btn" style="right: 16px" @click="move(1)"></ion-icon>
+        <ion-icon name="chevron-back-circle" class="btn" style="left: 0px" @click="move(-1)"></ion-icon>
+        <ion-icon name="chevron-forward-circle" class="btn" style="right: 0px" @click="move(1)"></ion-icon>
     </div>
 </template>
 
 <script lang="ts">
-interface Picture {
+export interface Picture {
     url: string
     link: string
 }
@@ -42,7 +42,6 @@ export default {
         let timer: NodeJS.Timer = null
 
         onMounted(start)
-        
 
         function stop() {
             if (timer) {
@@ -57,6 +56,16 @@ export default {
                 if (selected.value >= pictures.length)
                     setTimeout(() => selected.value = 1, 505)
             }, parseInt(props.speed))
+        }
+
+        function tp(i: number) {
+            if (i == 1) {
+                keepMove.value = 1
+                setTimeout(() => keepMove.value = 0, 505)
+            } else {
+                keepMove.value = 0
+            }
+            selected.value = i
         }
 
         function moveNow(fro: number) {
@@ -80,7 +89,7 @@ export default {
             selected.value += fro
         }
 
-        return { keepMove, selected, pictures, stop, start, move }
+        return { keepMove, selected, pictures, tp, stop, start, move }
     }
 }
 </script>
@@ -104,18 +113,19 @@ export default {
 .dotList {
     position: absolute;
     display: flex;
-    bottom: 1.5em;
-    right: 1.5em;
+    bottom: 0.5em;
+    right: 0.5em;
     opacity: 0.75;
     transition: all 0.3s;
 }
 
 .dot {
+    --r: 4px;
     background-color: white;
-    width: 1em;
-    height: 1em;
-    border-radius: 0.5em;
-    margin-left: 0.5em;
+    width: calc(2*var(--r));
+    height: calc(2*var(--r));
+    border-radius: var(--r);
+    margin-left: var(--r);
     transition: all 0.3s;
     box-shadow: 0 2px 3px grey;
 }

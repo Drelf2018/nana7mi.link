@@ -58,7 +58,7 @@ export default {
   color: black;
   text-shadow: none;
   background-color: white;
-  box-shadow: inset 0 -2px #f1f2f3 !important;
+  box-shadow: inset 0 -1px hsl(210, 8%, 80%);
 }
 
 .nav-picture {
@@ -67,7 +67,13 @@ export default {
   width: 100%;
   height: var(--height);
   background-repeat: no-repeat;
-  background-position: right 35%;
+  background-position: center;
   background-size: cover;
+}
+
+@media screen and (max-width: 1200px) {
+  .nav-picture {
+    background-position: 53%;
+  }
 }
 </style>

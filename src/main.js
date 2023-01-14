@@ -16,15 +16,15 @@ Date.prototype.Format = function (fmt) {
 
 import './index.css'
 import App from './App.vue'
-import HelloWorld from './components/HelloWorld.vue'
+import Hello from './components/Hello.vue'
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        { path: '/', component: HelloWorld },
-        // { path: '/:roomid', component: HelloWorld },
+        { path: '/', component: Hello },
+        { path: '/login', component: Hello },
     ]
 })
 

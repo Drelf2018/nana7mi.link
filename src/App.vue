@@ -1,6 +1,6 @@
 <template>
-  <Nav src="/background.webp" height="155px"></Nav>
-  <router-view />
+  <Nav src="https://yun.nana7mi.link/7mi.webp" height="200px"></Nav>
+  <suspense><router-view /></suspense>
 </template>
 
 <script>

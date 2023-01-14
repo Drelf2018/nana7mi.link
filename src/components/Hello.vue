@@ -1,12 +1,10 @@
 <template>
-  <div class="bg"></div>
   <div class="content">
-    <div class="date">
-      <div class="shadow-container">
-        <Swiper speed=2000 width="236px" :banner="banner"></Swiper>
-      </div>
-      <div class="shadow-container" style="font-size: 3em;">你好<br />李鑫</div>
+    <div class="tool">
+      <div class="date shadow-container" style="font-size: 3em;">日期</div>
+      <div class="btn shadow-container" onclick="alert('你在切你吗呢')">切换主题</div>
     </div>
+    
     <div class="post">
       <div class="shadow-container">
         <img alt="Vue logo" src="../assets/logo.png">
@@ -53,70 +51,53 @@
         </ul>
       </div>
     </div>
-    <div class="date">
-      <div class="shadow-container" style="font-size: 3em;">日期</div>
-      <div class="btn shadow-container" style="width: max-content;">切换背景</div>
+    <div class="sider">
+      <div class="shadow-container" style="padding:0">
+        <Swiper speed=2000 width="268px" :banner="banner" />
+      </div>
+      <div class="shadow-container" style="font-size: 3em;">你好<br />李鑫</div>
     </div>
   </div>
 
 </template>
 
-<script>
+<script lang="ts">
 import { ref } from 'vue'
-import Swiper from './Swiper.vue'
+import axios from 'axios'
+import Swiper, { Picture } from './Swiper.vue'
 
 export default {
-  components: {
-    Swiper
-  },
-  setup() {
-    const banner = ref([
-      {
-        link: "https://www.bilibili.com/video/BV1vJ411B7ng",
-        url: "https://i2.hdslb.com/bfs/archive/7fe8272ef4c90d07ba2dba968638392f8d5bf490.jpg"
-      },
-      {
-        link: "https://www.bilibili.com/video/BV1he4y1r79x",
-        url: "https://i1.hdslb.com/bfs/archive/ca796b3fe2a213c652ebb32469d81511036c7117.jpg"
-      },
-      {
-        link: "https://www.bilibili.com/video/BV1tG411g7Fo",
-        url: "https://i0.hdslb.com/bfs/archive/b7868c38077aaa66e233499723a4d7490804f861.png"
-      },
-      {
-        link: "https://www.bilibili.com/video/BV1T24y1R7wd",
-        url: "https://i1.hdslb.com/bfs/archive/ab9738d7aee96044183b61c7dd9c95eb1ec17ed1.jpg"
-      },
-      {
-        link: "https://www.bilibili.com/video/BV1pR4y1W7M7",
-        url: "https://i0.hdslb.com/bfs/new_dyn/8b90b7582c6fa3023eda3ffb58bf8eeb1464240042.png"
-      },
-      {
-        link: "",
-        url: "src/assets/logo.png"
+  components: { Swiper },
+  async setup() {
+
+    async function getPic(bvid: string) {
+      let res = await axios.get(`https://aliyun.nana7mi.link/video.Video(${bvid}).get_info().pic?max_age=2592000`)
+      let pic: Picture = {
+        link: `https://www.bilibili.com/video/${bvid}`,
+        url: res.data.data
       }
-    ])
-    return { banner }
+      return pic
+    }
+
+    const msg = ref("Welcome")
+    const banner = ref([])
+
+    let bvs = [
+      "BV1Nd4y1E7Xi", "BV1NV4y1s7qy", "BV1Wq4y1g7SW", "BV1WQ4y1i7NH", "BV1Y541177Rg", "BV18q4y1z7Vv",
+      "BV1vJ411B7ng", "BV1n3411Y7fR", "BV1d34y1D7Vk", "BV1wT4y1r7g6", "BV1924y1R76y", "BV1JA4y1d7Bb", 
+      "BV1yU4y1W7Y2", "BV1tU4y1R7qu", "BV1yf4y137XH", "BV16D4y177Ef", "BV1DK4y1g7zE", "BV19K4y1p7Zh"
+    ]
+    for (let bvid of bvs) {
+      banner.value.push(await getPic(bvid))
+    }
+
+    return { msg, banner }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.bg {
-  z-index: -1;
-  position: fixed;
-  top: 0;
-  left: 50%;
-  width: 100%;
-  height: 100vw;
-  transform: translateX(-50%);
-  background-color: rgb(246,248,250);
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: top;
-}
-
 .shadow-container {
   position: relative;
   z-index: 1;
@@ -131,10 +112,16 @@ export default {
   width: 600px;
 }
 
-.date {
+.sider, .tool {
   position: sticky;
   top: 64px;
   width: 276px;
+}
+
+.btn {
+  width: max-content;
+  left: 100%;
+  transform: translateX(calc(-100% - 8px));
 }
 
 .btn:hover {
@@ -164,5 +151,40 @@ li {
 
 a {
   color: #42b983;
+}
+
+@media screen and (max-width: 1200px) {
+  .content {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .sider {
+    display: none;
+  }
+
+  .tool {
+    position: static;
+    width: 600px;
+  }
+
+  .tool .btn {
+    display: none;
+  }
+
+  .date {
+    margin: 8px 4px 0px;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .post {
+    width: 80%;
+  }
+
+  .tool {
+    width: 80%;
+  }
 }
 </style>
