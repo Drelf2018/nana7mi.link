@@ -5,13 +5,8 @@
     </div>
     <div class="post">
       <div class="shadow-container">
-        <img src="https://yun.nana7mi.link/bg.png" style="max-width: 300px">
+        <Spine fileName="/build_char_002_amiya_test_1"></Spine>
         <h1>{{ msg }}</h1>
-        <p>
-          For a guide and recipes on how to configure / customize this project,<br>
-          check out the
-          <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-        </p>
       </div>
       <div class="shadow-container">
       <h3>Installed CLI Plugins</h3>
@@ -63,9 +58,10 @@ import { ref, PropType } from 'vue'
 import axios from 'axios'
 import Swiper, { Picture } from './Swiper.vue'
 import { Theme } from './theme'
+import Spine from './Spine.vue'
 
 export default {
-  components: { Swiper },
+  components: { Swiper, Spine },
   props: { 
     theme: Object as PropType<Theme>
   },
@@ -80,7 +76,7 @@ export default {
       return pic
     }
 
-    const msg = ref("Welcome")
+    const msg = ref("阿米娅好可爱")
     const banner = ref([])
 
     let bvs = [
