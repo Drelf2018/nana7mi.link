@@ -3,7 +3,7 @@
     <div class="nav-picture" :style="`background-image: url(${src})`"></div>
     <div :class="[isCovered === true ? 'nav-covered' : '', 'nav-header']">
       <div class="nav-controler" @click="theme.modifyTheme">
-        <ion-icon :id="`ion-${theme.theme}`" :name="theme.theme == 'light' ? 'sunny' : 'moon'" style="vertical-align: -0.15em;"></ion-icon>
+        <ion-icon :id="`ion-${theme.theme}`" :name="theme.theme == 'light' ? 'sunny' : 'moon'" style="vertical-align: -2px;"></ion-icon>
       </div>
       <input id="roomid" type="text" placeholder="支持模糊搜索动态">
       <span>登录</span>
@@ -39,7 +39,7 @@ export default {
 .nav-controler {
   font-size: 24px;
   border-radius: 17px;
-  padding: 0 5px 2px;
+  padding: 1px 5px;
   transition: all 0.2s;
 }
 
