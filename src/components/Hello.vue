@@ -2,11 +2,10 @@
   <div :class="['content', `view-${theme.theme}`]">
     <div class="tool">
       <div class="date shadow-container" style="font-size: 3em;">日期</div>
-      <div class="btn shadow-container" @click="theme.modifyTheme">切换主题</div>
     </div>
     <div class="post">
       <div class="shadow-container">
-        <img src="https://yun.nana7mi.link/bg.png" style="max-width: 400px">
+        <img src="https://yun.nana7mi.link/bg.png" style="max-width: 300px">
         <h1>{{ msg }}</h1>
         <p>
           For a guide and recipes on how to configure / customize this project,<br>
@@ -60,22 +59,17 @@
 </template>
 
 <script lang="ts">
-interface Theme {
-  theme: String
-  setBackgroundColor: Function
-  modifyTheme: Function
-}
-
 import { ref, PropType } from 'vue'
 import axios from 'axios'
 import Swiper, { Picture } from './Swiper.vue'
+import { Theme } from './theme'
 
 export default {
   components: { Swiper },
   props: { 
     theme: Object as PropType<Theme>
   },
-  async setup(props) {
+  async setup() {
 
     async function getPic(bvid: string) {
       let res = await axios.get(`https://aliyun.nana7mi.link/video.Video(${bvid}).get_info().pic?max_age=2592000`)
@@ -103,7 +97,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only  -->
 <style scoped>
 .shadow-container {
   position: relative;
@@ -111,7 +104,7 @@ export default {
   padding: 16px;
   margin: 8px 4px;
   border-radius: 5px;
-  transition: all 0.2s;
+  transition: background-color 0.2s ease 0, color 0.2s ease 0;
 }
 
 .view-light div .shadow-container {
@@ -121,7 +114,7 @@ export default {
 
 .view-dark div .shadow-container {
   color: rgb(201, 209, 217);
-  background-color: rgb(13, 17, 23);
+  background-color: rgb(43,43,43);
   box-shadow: inset 0 0 0 1px rgb(48, 54, 61);
 }
 
@@ -135,13 +128,13 @@ export default {
   width: 276px;
 }
 
-.btn {
+/* .btn {
   width: max-content;
   left: 100%;
   transform: translateX(calc(-100% - 8px));
   -webkit-user-select: none;
   user-select: none;
-}
+} */
 
 /* .btn:hover {
   background-color: rgb(245, 245, 245) !important;
@@ -186,23 +179,12 @@ a {
   .tool {
     position: static;
     width: 600px;
-  }
-
-  .tool .btn {
-    display: none;
-  }
-
-  .date {
-    margin: 8px 4px 0px;
+    margin-bottom: -8px;
   }
 }
 
 @media screen and (max-width: 750px) {
-  .post {
-    width: 80%;
-  }
-
-  .tool {
+  .post, .tool {
     width: 80%;
   }
 }

@@ -1,6 +1,6 @@
 <template>
-  <Nav src="https://yun.nana7mi.link/7mi.webp" height="200px" :class="'nav-' + theme.theme"></Nav>
-  <suspense><router-view :theme="theme"/></suspense>
+  <Nav src="https://yun.nana7mi.link/7mi.webp" height="200px" :theme="theme"></Nav>
+  <suspense><router-view :theme="theme" /></suspense>
 </template>
 
 <script>
@@ -13,7 +13,7 @@ export default {
     const theme = ref({
       theme: localStorage.getItem("theme") || "light",
       setBackgroundColor() {
-        document.getElementById("app").style.backgroundColor = this.theme == "light" ? "rgb(246,248,250)" : "rgb(1,4,9)"
+        document.getElementById("app").style.backgroundColor = this.theme == "light" ? "rgb(246,248,250)" : "rgb(30,30,30)"
       },
       modifyTheme() {
         this.theme = this.theme == "light" ? "dark" : "light"

@@ -1,41 +1,84 @@
 <template>
-  <div class="nav-container" :style="'--height: ' + height">
-    <div class="nav-picture" :style="'background-image: url(' + src + ')'"></div>
+  <div :class="['nav-container', `nav-${theme.theme}`]" :style="'--height: ' + height">
+    <div class="nav-picture" :style="`background-image: url(${src})`"></div>
     <div :class="[isCovered === true ? 'nav-covered' : '', 'nav-header']">
-      <span>主页</span>
-      <span>搜索</span>
+      <div class="nav-controler" @click="theme.modifyTheme">
+        <ion-icon :id="`ion-${theme.theme}`" :name="theme.theme == 'light' ? 'sunny' : 'moon'" style="vertical-align: -0.15em;"></ion-icon>
+      </div>
+      <input id="roomid" type="text" placeholder="支持模糊搜索动态">
       <span>登录</span>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, onUnmounted } from 'vue'
+import { ref, PropType } from 'vue'
+import { Theme } from './theme'
 
 export default {
   props: {
     src: String,
     height: String,
+    theme: Object as PropType<Theme>
   },
   setup(props) {
     const isCovered = ref(false)
     const totalHeight = parseInt(props.height.replace("px", ""))
 
-    function handleScroll() {
+    window.addEventListener("scroll", () => {
       let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
       isCovered.value = totalHeight <= (64 + scrollTop)
-    }
-
-    window.addEventListener("scroll", handleScroll)
-    onUnmounted(() => window.removeEventListener("scroll", handleScroll))
+    })
 
     return { isCovered }
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.nav-controler {
+  font-size: 24px;
+  border-radius: 17px;
+  padding: 0 5px 2px;
+  transition: all 0.2s;
+}
+
+#ion-light {
+  color: rgb(255,130,0);
+}
+
+#ion-dark {
+  color: rgb(255,228,53);
+}
+
+.nav-light .nav-header .nav-controler {
+  background-color: rgba(255,255,255,0.75);
+}
+
+.nav-light .nav-header .nav-controler:hover {
+  background-color: rgba(255,255,255,1);
+}
+
+.nav-dark .nav-header .nav-controler {
+  background-color: rgba(255,255,255,0.25);
+}
+
+.nav-dark .nav-header .nav-controler:hover {
+  background-color: rgba(255,255,255,0.35);
+}
+
+.nav-dark .nav-covered .nav-controler {
+  background-color: inherit;
+}
+
+.nav-light .nav-covered .nav-controler:hover {
+  background-color: rgba(0,0,0,0.1);
+}
+
+.nav-dark .nav-covered .nav-controler:hover {
+  background-color: rgba(255,255,255,0.25);
+}
+
 .nav-container {
   height: var(--height);
 }
@@ -53,13 +96,12 @@ export default {
 }
 
 .nav-light .nav-header {
-  color: white;
+  color: rgb(255, 255, 255);
   text-shadow: 0px 1px 3px black;
 }
 
 .nav-dark .nav-header {
-  color: black;
-  /* text-shadow: 0px 1px 3px black; */
+  color: rgb(201, 209, 217);
 }
 
 .nav-light .nav-covered {
@@ -70,10 +112,9 @@ export default {
 }
 
 .nav-dark .nav-covered {
-  color: white;
   text-shadow: none;
-  background-color: rgb(22, 27, 34);
-  /* box-shadow: inset 0 -1px hsl(210, 8%, 80%); */
+  background-color: rgb(34,34,37);
+  box-shadow: inset 0 -1px rgb(33, 38, 45);
 }
 
 .nav-picture {
@@ -82,7 +123,7 @@ export default {
   width: 100%;
   height: var(--height);
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: center 0%;
   background-size: cover;
   transition: opacity 0.2s;
 }
@@ -94,6 +135,42 @@ export default {
 @media screen and (max-width: 1200px) {
   .nav-picture {
     background-position: 53%;
+  }
+}
+
+input {
+  display: block;
+  box-sizing: border-box;
+  width: 592px;
+  height: 40px;
+  font-size: 1em;
+  font-weight: 540;
+  padding: 1px 0 0 0.5em;
+  border: 1px solid #ced4da;
+  border-radius: 0.5em;
+  transition: all 0.2s;
+  opacity: 0.5;
+}
+
+.nav-dark input:focus {
+  /* background-color: rgb(13, 17, 23); */
+  box-shadow: inset 0 -1px rgb(33, 38, 45);
+}
+
+input:hover {
+  opacity: 0.75;
+}
+
+input:focus {
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
+  opacity: 1;
+}
+
+@media screen and (max-width: 750px) {
+  input {
+    width: calc(80% - 8px);
   }
 }
 </style>

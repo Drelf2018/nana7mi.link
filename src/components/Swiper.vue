@@ -2,7 +2,7 @@
     <div class="swiper-container" @mouseenter="stop" @mouseleave="start">
         <div class="swiper-hidden">
             <div :class="[keepMove ^ (selected == 1 ? 1 : 0) ? 'swiper-scroll-back' : 'swiper-scroll-move', 'swiper-scroll']" :style="`left: ${(selected-1)*-100}%`">
-                <a v-for="pic in pictures" :href="pic.link">
+                <a v-for="pic in pictures" :href="pic.link" target="_blank">
                     <div class="blur-image" :style="`width: ${width};background-image: url(${pic.url});`"></div>
                     <img :src="pic.url" />
                 </a>
