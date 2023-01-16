@@ -1,7 +1,8 @@
 import spine from './spine-webgl';
 import { downloadBlob } from './utils';
 const noop = () => {};
-interface Skeleton {
+
+export interface Skeleton {
   skeleton: spine.Skeleton;
   bounds: {
     offset: spine.Vector2;
@@ -139,6 +140,7 @@ export class Spine {
       premultipliedAlpha,
     };
     this.position = position;
+    this.play(name);
     return this.skeletons[name];
   }
   play(activeSkeleton: string): void {

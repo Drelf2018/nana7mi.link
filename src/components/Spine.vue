@@ -4,9 +4,10 @@
   </div>
 </template>
 
-<script>
-import { ref, onMounted } from 'vue';
-import { Spine } from './spine_runtime/spine'
+<script lang="ts">
+import { ref, onMounted, getCurrentInstance } from 'vue';
+import { Spine, Skeleton } from './spine_runtime/spine'
+import spine from './spine_runtime/spine-webgl';
 
 export default {
   props: {
@@ -14,13 +15,26 @@ export default {
   },
   setup(props) {
     const canvas = ref(null)
+    const cns = getCurrentInstance()
+    const debounce = cns.appContext.config.globalProperties.$debounce
+    const throttle = cns.appContext.config.globalProperties.$throttle
+
 
     onMounted(() => {
-      const spine = new Spine(canvas.value)
-      spine.load("Amiya", props.fileName+".skel", props.fileName+".atlas", { x: -260, y: -35, scale: 2 }, "default", true).then(
-        sk => {
-          spine.play("Amiya")
-          sk.state.addAnimation(0, "Move", true)
+      let canvasElement: HTMLCanvasElement = canvas.value
+      new Spine(canvasElement).load("Amiya", props.fileName+".skel", props.fileName+".atlas", { x: -260, y: -35, scale: 2 }, "default", true).then(
+        (skeleton: Skeleton) => {
+          skeleton.state.data.skeletonData.animations.forEach(
+            (animation: spine.Animation) => {
+              console.log(animation);
+            }
+          )
+          skeleton.state.addAnimation(0, "Move", true, 0)
+          const move: Function = debounce(() => skeleton.state.setAnimation(0, "Move", true))
+          canvasElement.onclick = throttle(() => {
+            skeleton.state.setAnimation(0, "Interact", false)
+            move()
+          })
         }
       )
     })

@@ -4,7 +4,7 @@
       <div class="date shadow-container" style="font-size: 3em;">日期</div>
     </div>
     <div class="post">
-      <div class="shadow-container">
+      <div class="shadow-container" style="-webkit-user-select: none;user-select: none;">
         <Spine fileName="/build_char_002_amiya_test_1"></Spine>
         <h1>{{ msg }}</h1>
       </div>
@@ -76,7 +76,7 @@ export default {
       return pic
     }
 
-    const msg = ref("阿米娅好可爱")
+    const msg = ref("阿米娅好可爱（戳戳试试")
     const banner = ref([])
 
     let bvs = [

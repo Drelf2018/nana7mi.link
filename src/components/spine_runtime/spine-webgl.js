@@ -2137,7 +2137,7 @@ var spine;
 	var AnimationStateData = (function () {
 		function AnimationStateData(skeletonData) {
 			this.animationToMixTime = {};
-			this.defaultMix = 0;
+			this.defaultMix = 0.24;
 			if (skeletonData == null)
 				throw new Error("skeletonData cannot be null.");
 			this.skeletonData = skeletonData;
