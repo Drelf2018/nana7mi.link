@@ -30,6 +30,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - name: Spine
+      run: git clone -b spine_runtime https://github.com/Drelf2018/nana7mi.link.git ./src/components/spine_runtime
     - name: Install
       run: npm install
     - name: CI
