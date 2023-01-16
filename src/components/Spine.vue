@@ -31,10 +31,11 @@ export default {
           )
           skeleton.state.addAnimation(0, "Move", true, 0)
           const move: Function = debounce(() => skeleton.state.setAnimation(0, "Move", true))
+          canvasElement.parentElement.style.opacity = "1"
           canvasElement.onclick = throttle(() => {
             skeleton.state.setAnimation(0, "Interact", false)
             move()
-          })
+          }, 1000)
         }
       )
     })
@@ -50,5 +51,7 @@ export default {
   width: 250px;
   height: 250px;
   margin: auto;
+  opacity: 0;
+  transition: opacity 0.3s;
 }
 </style>
