@@ -45,7 +45,7 @@
       </div>
     </div>
     <div class="sider">
-      <div class="shadow-container" :style="`padding:0;opacity:${theme.theme == 'light' ? '1' : '0.5'}`">
+      <div class="shadow-container" :style="`padding:0;transition: all 0.2s;opacity:${theme.theme == 'light' ? '1' : '0.5'}`">
         <Swiper speed=2000 width="268px" :banner="banner" />
       </div>
       <div class="shadow-container" style="font-size: 3em;">你好<br />李鑫</div>
