@@ -1,42 +1,9 @@
 <template>
   <div :class="['content', `view-${theme.theme}`]">
     <div class="tool">
-      <div class="date shadow-container" style="font-size: 3em;">日期</div>
+      <div class="date shadow-container">{{ msg }}</div>
     </div>
     <div class="post">
-      <div class="shadow-container" style="-webkit-user-select: none;user-select: none;">
-        <Spine fileName="/build_char_002_amiya_test_1"></Spine>
-        <h1>{{ msg }}</h1>
-      </div>
-      <div class="shadow-container">
-      <h3>Installed CLI Plugins</h3>
-      <ul>
-        <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank"
-            rel="noopener">babel</a></li>
-        <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank"
-            rel="noopener">eslint</a></li>
-      </ul>
-      </div>
-      <div class="shadow-container">
-      <h3>Essential Links</h3>
-      <ul>
-        <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-        <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-        <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-        <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-        <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-      </ul></div>
-      <div class="shadow-container">
-      <h3>Ecosystem</h3>
-      <ul>
-        <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-        <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-        <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a>
-        </li>
-        <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-        <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-      </ul></div>
-      
       <div class="shadow-container" v-for="i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
         <h3>Test{{ i }}</h3>
         <ul>
@@ -45,24 +12,27 @@
       </div>
     </div>
     <div class="sider">
-      <div class="shadow-container" :style="`padding:0;transition: all 0.2s;opacity:${theme.theme == 'light' ? '1' : '0.5'}`">
+      <div class="fill shadow-container" :theme="theme.theme">
         <Swiper speed=2000 width="268px" :banner="banner" />
       </div>
-      <div class="shadow-container" style="font-size: 3em;">你好<br />李鑫</div>
+      <div class="fill shadow-container" :theme="theme.theme" style="text-align: left;">
+        <Card :uid=434334701 ></Card>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, PropType } from 'vue'
 import axios from 'axios'
-import Swiper, { Picture } from './Swiper.vue'
 import { Theme } from './theme'
-import Spine from './Spine.vue'
+import { ref, PropType, watch } from 'vue'
+
+import Card from './Card.vue'
+import Swiper, { Picture } from './Swiper.vue'
 
 export default {
-  components: { Swiper, Spine },
-  props: { 
+  components: { Swiper, Card },
+  props: {
     theme: Object as PropType<Theme>
   },
   async setup() {
@@ -81,7 +51,7 @@ export default {
 
     let bvs = [
       "BV1Nd4y1E7Xi", "BV1NV4y1s7qy", "BV1Wq4y1g7SW", "BV1WQ4y1i7NH", "BV1Y541177Rg", "BV18q4y1z7Vv",
-      "BV1vJ411B7ng", "BV1n3411Y7fR", "BV1d34y1D7Vk", "BV1wT4y1r7g6", "BV1924y1R76y", "BV1JA4y1d7Bb", 
+      "BV1vJ411B7ng", "BV1n3411Y7fR", "BV1d34y1D7Vk", "BV1wT4y1r7g6", "BV1924y1R76y", "BV1JA4y1d7Bb",
       "BV1yU4y1W7Y2", "BV1tU4y1R7qu", "BV1yf4y137XH", "BV16D4y177Ef", "BV1DK4y1g7zE", "BV19K4y1p7Zh"
     ]
     for (let bvid of bvs) {
@@ -110,32 +80,34 @@ export default {
 
 .view-dark div .shadow-container {
   color: rgb(201, 209, 217);
-  background-color: rgb(43,43,43);
+  background-color: rgb(43, 43, 43);
   box-shadow: inset 0 0 0 1px rgb(48, 54, 61);
 }
 
 .post {
   width: 600px;
+  z-index: 1;
 }
 
 .sider, .tool {
   position: sticky;
   top: 64px;
   width: 276px;
+  z-index: 1;
 }
 
-/* .btn {
-  width: max-content;
-  left: 100%;
-  transform: translateX(calc(-100% - 8px));
-  -webkit-user-select: none;
-  user-select: none;
-} */
+.fill {
+  padding: 0;
+  transition: all 0.2s;
+}
 
-/* .btn:hover {
-  background-color: rgb(245, 245, 245) !important;
-  box-shadow: 0 1px 3px grey !important;
-} */
+.fill[theme=light] {
+  opacity: 1;
+}
+
+.fill[theme=dark] {
+  opacity: 0.5;
+}
 
 .content {
   display: flex;

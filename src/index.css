@@ -19,3 +19,9 @@ body {
     min-height: 100vh;
     transition: background-color 0.2s;
 }
+
+@media screen and (min-width: 1200px) {
+    #app {
+        zoom: max(1, var(--zoom));
+    }
+}
