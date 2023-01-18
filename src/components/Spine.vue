@@ -25,7 +25,7 @@ export default {
         (skeleton: Skeleton) => {
           skeleton.state.data.skeletonData.animations.forEach(
             (animation: spine.Animation) => {
-              console.log(animation);
+              // console.log(animation);
             }
           )
           const move: Function = debounce(() => {

@@ -7,7 +7,7 @@
 
 <style scoped>
 .iPhone {
-    margin-bottom: -8px;
+    padding-top: 8px;
     width: 323px;
     height: 657px;
     zoom: 0.85;
@@ -26,5 +26,6 @@
     width: calc(100% - 32px);
     height: calc(100% - 28px);
     border-radius: 12% / 7%;
+    overflow: hidden;
 }
 </style>

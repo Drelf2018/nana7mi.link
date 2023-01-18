@@ -56,7 +56,7 @@ export default {
     axios.get(`https://aliyun.nana7mi.link/user.User(${props.uid}).get_user_info()?max_age=86400`).then(
       res => {
         let data: biliInfo = res.data.data
-        console.log(data);
+        // console.log(data);
 
         bili.value = data
         bili.value.face = bili.value.face.replace("http:", "https:")

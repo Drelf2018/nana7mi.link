@@ -1,8 +1,10 @@
 <template>
   <div :class="['content', `view-${theme.theme}`]">
-    <div class="hidden" style="padding-top: 8px;">
+    <div class="hidden">
       <iPhone>
-        <!-- <iframe src="https://h5.cctvnews.cctv.com/szdh2023/index.html" width="100%" height="100%" style="border-radius: inherit;border-width: 0;"></iframe> -->
+        <video class="media" onclick="play()">
+          <source src="https://yun.nana7mi.link/dance.mp4" type="video/mp4">
+        </video>
       </iPhone>
       <div class="tool">
         <div class="date shadow-container">{{ msg }}</div>
@@ -90,6 +92,13 @@ export default {
   color: rgb(201, 209, 217);
   background-color: rgb(43, 43, 43);
   box-shadow: inset 0 0 0 1px rgb(48, 54, 61);
+}
+
+.media {
+  left: 50%;
+  transform: translateX(-50%);
+  position: relative;
+  height: 100%;
 }
 
 .post {
