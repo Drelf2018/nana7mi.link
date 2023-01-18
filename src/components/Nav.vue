@@ -39,7 +39,7 @@ export default {
 .nav-controler {
   font-size: 24px;
   border-radius: 17px;
-  padding: 1px 5px;
+  padding: 2px 5px 0px;
   transition: all 0.2s;
 }
 
