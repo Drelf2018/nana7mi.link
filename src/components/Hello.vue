@@ -1,8 +1,8 @@
 <template>
   <div :class="['content', `view-${theme.theme}`]">
-    <div style="padding-top: 8px;">
+    <div class="hidden" style="padding-top: 8px;">
       <iPhone>
-        <iframe src="https://h5.cctvnews.cctv.com/szdh2023/index.html" width="100%" height="100%" style="border-radius: inherit;border-width: 0;"></iframe>
+        <!-- <iframe src="https://h5.cctvnews.cctv.com/szdh2023/index.html" width="100%" height="100%" style="border-radius: inherit;border-width: 0;"></iframe> -->
       </iPhone>
       <div class="tool">
         <div class="date shadow-container">{{ msg }}</div>
@@ -16,7 +16,7 @@
         </ul>
       </div>
     </div>
-    <div>
+    <div class="hidden">
       <div class="fill shadow-container" :theme="theme.theme" style="width:268px;margin-bottom: 8px;">
         <Swiper speed=2000 width="268px" :banner="banner" />
       </div>
@@ -147,15 +147,15 @@ a {
     flex-direction: column;
   }
 
-  .sider {
+  .hidden {
     display: none;
   }
 
-  .tool {
+  /* .tool {
     position: static;
     width: 600px;
     margin-bottom: -8px;
-  }
+  } */
 }
 
 @media screen and (max-width: 750px) {

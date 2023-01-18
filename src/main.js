@@ -18,6 +18,7 @@ import './index.css'
 import App from './App.vue'
 import Hello from './components/Hello.vue'
 import { createApp } from 'vue'
+import iPhone from './components/iPhone.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
