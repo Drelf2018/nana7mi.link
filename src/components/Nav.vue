@@ -93,6 +93,7 @@ export default {
   justify-content: space-evenly;
   align-items: center;
   transition: background-color 0.2s;
+  z-index: 100;
 }
 
 .nav-light .nav-header {

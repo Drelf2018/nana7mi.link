@@ -1,7 +1,12 @@
 <template>
   <div :class="['content', `view-${theme.theme}`]">
-    <div class="tool">
-      <div class="date shadow-container">{{ msg }}</div>
+    <div style="padding-top: 8px;">
+      <iPhone>
+        <iframe src="https://h5.cctvnews.cctv.com/szdh2023/index.html" width="100%" height="100%" style="border-radius: inherit;border-width: 0;"></iframe>
+      </iPhone>
+      <div class="tool">
+        <div class="date shadow-container">{{ msg }}</div>
+      </div>
     </div>
     <div class="post">
       <div class="shadow-container" v-for="i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
@@ -11,12 +16,14 @@
         </ul>
       </div>
     </div>
-    <div class="sider">
-      <div class="fill shadow-container" :theme="theme.theme">
+    <div>
+      <div class="fill shadow-container" :theme="theme.theme" style="width:268px;margin-bottom: 8px;">
         <Swiper speed=2000 width="268px" :banner="banner" />
       </div>
-      <div class="fill shadow-container" :theme="theme.theme" style="text-align: left;">
-        <Card :uid=434334701 ></Card>
+      <div class="sider">
+        <div class="fill shadow-container" :theme="theme.theme" style="text-align: left;">
+          <Card :uid=434334701 ></Card>
+        </div>
       </div>
     </div>
   </div>
@@ -25,13 +32,14 @@
 <script lang="ts">
 import axios from 'axios'
 import { Theme } from './theme'
-import { ref, PropType, watch } from 'vue'
+import { ref, PropType } from 'vue'
 
 import Card from './Card.vue'
 import Swiper, { Picture } from './Swiper.vue'
+import iPhone from './iPhone.vue'
 
 export default {
-  components: { Swiper, Card },
+  components: { Swiper, Card, iPhone },
   props: {
     theme: Object as PropType<Theme>
   },
@@ -91,7 +99,7 @@ export default {
 
 .sider, .tool {
   position: sticky;
-  top: 64px;
+  top: 72px;
   width: 276px;
   z-index: 1;
 }
@@ -111,7 +119,6 @@ export default {
 
 .content {
   display: flex;
-  align-items: flex-start;
   justify-content: center;
 }
 

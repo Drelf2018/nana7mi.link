@@ -21,7 +21,7 @@ export default {
 
     onMounted(() => {
       let canvasElement: HTMLCanvasElement = canvas.value
-      new Spine(canvasElement).load("Amiya", props.fileName+".skel", props.fileName+".atlas", { x: -260, y: -5, scale: 2 }, "default", true).then(
+      new Spine(canvasElement).load("Amiya", props.fileName+".skel", props.fileName+".atlas", { x: -245, y: -5, scale: 2 }, "default", true).then(
         (skeleton: Skeleton) => {
           skeleton.state.data.skeletonData.animations.forEach(
             (animation: spine.Animation) => {
@@ -58,5 +58,6 @@ export default {
   opacity: 0;
   transition: opacity 0.3s;
   z-index: 0;
+  zoom: 0.6;
 }
 </style>
