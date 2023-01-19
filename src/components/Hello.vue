@@ -33,11 +33,11 @@
 
 <script lang="ts">
 import axios from 'axios'
-import { Theme } from './theme'
+import { Theme, Picture } from './tool'
 import { ref, PropType } from 'vue'
 
 import Card from './Card.vue'
-import Swiper, { Picture } from './Swiper.vue'
+import Swiper from './Swiper.vue'
 import iPhone from './iPhone.vue'
 
 export default {

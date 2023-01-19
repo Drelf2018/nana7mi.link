@@ -17,12 +17,8 @@
 </template>
 
 <script lang="ts">
-export interface Picture {
-    url: string
-    link: string
-}
-
-import { ref, getCurrentInstance, onMounted } from 'vue'
+import { Picture, throttle } from './tool'
+import { ref, onMounted } from 'vue'
 
 export default {
     props: {
@@ -36,8 +32,7 @@ export default {
 
         const keepMove = ref(0)
         const selected = ref(1)
-        const cns = getCurrentInstance()
-        const move: Function = cns.appContext.config.globalProperties.$throttle(moveNow, 550)
+        const move: Function = throttle(moveNow, 550)
         
         let timer: NodeJS.Timer = null
 

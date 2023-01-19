@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { ref, PropType } from 'vue'
-import { Theme } from './theme'
+import { Theme } from './tool'
 
 export default {
   props: {

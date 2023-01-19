@@ -2,6 +2,7 @@
   <Nav src="https://yun.nana7mi.link/7mi.webp" height="200px" :theme="theme"></Nav>
   <suspense><router-view :theme="theme" /></suspense>
   <Spine v-if="width + 16 >= 1200" fileName="/build_char_002_amiya_test_1"></Spine>
+  <Spine v-if="width + 16 >= 1200" fileName="/build_char_358_lisa_lxh_1" x="-340" y="-5"></Spine>
 </template>
 
 <script>
