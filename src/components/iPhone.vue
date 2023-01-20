@@ -1,6 +1,12 @@
 <template>
     <div class="iPhone">
-        <div class="ip-container"><slot></slot></div>
+        <div class="ip-container">
+            <slot>
+                <video class="media" onclick="play()">
+                    <source src="https://yun.nana7mi.link/dance.mp4" type="video/mp4">
+                </video>
+            </slot>
+        </div>
         <img src="https://yun.nana7mi.link/iPhone14.webp">
     </div>
 </template>
@@ -27,5 +33,12 @@
     height: calc(100% - 28px);
     border-radius: 12% / 7%;
     overflow: hidden;
+}
+
+.media {
+  left: 50%;
+  transform: translateX(-50%);
+  position: relative;
+  height: 100%;
 }
 </style>

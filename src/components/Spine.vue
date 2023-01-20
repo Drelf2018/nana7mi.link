@@ -1,11 +1,11 @@
 <template>
   <div class="Amiya">
-    <canvas ref="canvas" width="800" height="500"></canvas>
+    <canvas ref="canvas" width="1000" height="500"></canvas>
   </div>
 </template>
 
-<script lang="ts">
-import { ref, onMounted } from 'vue'
+<script setup lang="ts">
+import { ref, onMounted, defineProps, defineExpose } from 'vue'
 import visibility from 'vue-visibility-change'
 
 import { Spine } from './spine_runtime/spine'
@@ -13,32 +13,32 @@ import spine from './spine_runtime/spine-webgl'
 
 import { throttle, debounce } from './tool'
 
-interface ani {
+interface animation {
   name: string
   time: number
   loop: boolean
 }
 
 class Amiya {
+  lambda: number = null
   plan: NodeJS.Timeout = null
   element: HTMLElement = null
   canvas: HTMLCanvasElement = null
   state: spine.AnimationState = null
-  lambda: number = 7500
   direction: number = Math.random() >= 0.5 ? 1 : -1
   waitForStart: Function = debounce(() => this.start(), 2000)
-  animations: ani[] = [
+  animations: animation[] = [
     null,
     { name: "Sleep", time: 6000, loop: true },
-    { name: "Special", time: 13366, loop: false },
-    { name: "Interact", time: 1000, loop: false }
   ]
-  constructor (canvas: HTMLCanvasElement, state: spine.AnimationState) {
+  constructor (canvas: HTMLCanvasElement, state: spine.AnimationState, lambda: number) {
     this.state = state
-    state.data.skeletonData.animations.forEach(ani => {
-      if (ani.name == "Special") this.animations[2].time = Math.floor(1000 * ani.duration)
-      if (ani.name == "Interact") this.animations[3].time = Math.floor(1000 * ani.duration)
-    })
+    this.lambda = lambda
+    
+    for (let name of ["Special", "Interact"]) {
+      let ani = state.data.skeletonData.findAnimation(name)
+      this.animations.push({ name: name, time: Math.floor(1000 * ani.duration), loop: false})
+    }
 
     this.canvas = canvas
     this.canvas.className = this.direction == -1 ? "reverse" : ""
@@ -49,7 +49,7 @@ class Amiya {
     this.element.onclick = throttle(() => this.stop("Interact"), 1000)
     
     this.stop("Relax", true)
-    setTimeout(this.waitForStart, 8000 * Math.random())
+    setTimeout(this.waitForStart, 6000 * Math.random())
     
     visibility.change((evt: any, hidden: boolean) => hidden ? this.stop("Relax", true) : this.start())
   }
@@ -111,34 +111,38 @@ class Amiya {
   }
 }
 
-export default {
-  props: {
-    fileName: String,
-    x: {
-      type: String,
-      default: "-380"
-    },
-    y: {
-      type: String,
-      default: "-7"
-    }
+const props = defineProps({
+  fileName: String,
+  x: {
+    type: String,
+    default: "-500"
   },
-  setup(props) {
-    const canvas = ref(null)
-
-    onMounted(() => {
-      new Spine(canvas.value).load(
-        props.fileName,
-        props.fileName+".skel",
-        props.fileName+".atlas",
-        { x: parseInt(props.x), y: parseInt(props.y), scale: 1 },
-        "default",
-        true
-      ).then(skeleton => new Amiya(canvas.value, skeleton.state))
-    })
-
-    return { canvas } 
+  y: {
+    type: String,
+    default: "-5"
+  },
+  lambda: {
+    type: String,
+    default: "7500"
   }
+})
+
+const canvas = ref(null)
+defineExpose({
+  canvas
+})
+
+if (document.body.clientWidth + 17 > 1200) {
+  onMounted(() => {
+    new Spine(canvas.value).load(
+      props.fileName,
+      props.fileName+".skel",
+      props.fileName+".atlas",
+      { x: parseInt(props.x), y: parseInt(props.y), scale: 1 },
+      "default",
+      true
+    ).then(skeleton => new Amiya(canvas.value, skeleton.state, parseInt(props.lambda)))
+  })
 }
 </script>
 
@@ -147,12 +151,19 @@ export default {
   position: fixed;
   top: 100%;
   transform: translateY(-100%);
-  width: 240px;
+  width: 300px;
   height: 150px;
   margin: auto;
   opacity: 0;
   transition: opacity 0.5s ease 0.5s, left 100s linear;
   z-index: 80;
+}
+
+.Amiya[debug]::before {
+  position: relative;
+  content: "";
+  left: 50%;
+  border-right: 3px red solid;
 }
 
 .reverse {
@@ -161,6 +172,12 @@ export default {
 
 canvas {
   zoom: 0.3;
-  transition: all 0.5s;
+  transition: transform 0.5s;
+}
+
+@media screen and (max-width: 1200px) {
+  canvas {
+    opacity: 0;
+  }
 }
 </style>

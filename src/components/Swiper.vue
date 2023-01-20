@@ -1,5 +1,5 @@
 <template>
-    <div class="swiper-container" @mouseenter="stop" @mouseleave="start">
+    <div v-if="pictures.length" class="swiper-container" @mouseenter="stop" @mouseleave="start">
         <div class="swiper-hidden">
             <div :class="[keepMove ^ (selected == 1 ? 1 : 0) ? 'swiper-scroll-back' : 'swiper-scroll-move', 'swiper-scroll']" :style="`left: ${(selected-1)*-100}%`">
                 <a v-for="pic in pictures" :href="pic.link" target="_blank">
@@ -16,76 +16,67 @@
     </div>
 </template>
 
-<script lang="ts">
-import { Picture, throttle } from './tool'
-import { ref, onMounted } from 'vue'
+<script setup lang="ts">
+import { throttle, Picture } from './tool'
+import { ref, onMounted, defineProps } from 'vue'
 
-export default {
-    props: {
-        speed: String,
-        width: String,
-        banner: Array<Picture>
-    },
-    setup(props) {
-        const pictures = props.banner
-        pictures.push(pictures[0])
+const props = defineProps({
+    speed: String,
+    width: String,
+    pictures: Array<Picture>
+})
+    
+const keepMove = ref(0)
+const selected = ref(1)
+const move: Function = throttle(moveNow, 550)
+let timer: NodeJS.Timer = null
 
-        const keepMove = ref(0)
-        const selected = ref(1)
-        const move: Function = throttle(moveNow, 550)
-        
-        let timer: NodeJS.Timer = null
+onMounted(start)
 
-        onMounted(start)
-
-        function stop() {
-            if (timer) {
-                clearInterval(timer);
-                timer = null;
-            }
-        }
-
-        function start() {
-            timer = setInterval(() => {
-                selected.value += 1
-                if (selected.value >= pictures.length)
-                    setTimeout(() => selected.value = 1, 505)
-            }, parseInt(props.speed))
-        }
-
-        function tp(i: number) {
-            if (i == 1) {
-                keepMove.value = 1
-                setTimeout(() => keepMove.value = 0, 505)
-            } else {
-                keepMove.value = 0
-            }
-            selected.value = i
-        }
-
-        function moveNow(fro: number) {
-            stop()
-            if (fro == 1 && selected.value == pictures.length - 1) setTimeout(() => selected.value = 1, 505)
-            else if (fro == -1) {
-                if (selected.value == 2) {
-                    keepMove.value = 1
-                    setTimeout(() => keepMove.value = 0, 505)
-                }
-                else if (selected.value == 1) {
-                    keepMove.value = 1
-                    selected.value = pictures.length
-                    setTimeout(() => {
-                        keepMove.value = 0
-                        selected.value -= 1
-                    }, 5)
-                    return
-                }
-            }
-            selected.value += fro
-        }
-
-        return { keepMove, selected, pictures, tp, stop, start, move }
+function stop() {
+    if (timer) {
+        clearInterval(timer);
+        timer = null;
     }
+}
+
+function start() {
+    timer = setInterval(() => {
+        selected.value += 1
+        if (selected.value >= props.pictures.length)
+            setTimeout(() => selected.value = 1, 505)
+    }, parseInt(props.speed))
+}
+
+function tp(i: number) {
+    if (i == 1) {
+        keepMove.value = 1
+        setTimeout(() => keepMove.value = 0, 505)
+    } else {
+        keepMove.value = 0
+    }
+    selected.value = i
+}
+
+function moveNow(fro: number) {
+    stop()
+    if (fro == 1 && selected.value == props.pictures.length - 1) setTimeout(() => selected.value = 1, 505)
+    else if (fro == -1) {
+        if (selected.value == 2) {
+            keepMove.value = 1
+            setTimeout(() => keepMove.value = 0, 505)
+        }
+        else if (selected.value == 1) {
+            keepMove.value = 1
+            selected.value = props.pictures.length
+            setTimeout(() => {
+                keepMove.value = 0
+                selected.value -= 1
+            }, 5)
+            return
+        }
+    }
+    selected.value += fro
 }
 </script>
 

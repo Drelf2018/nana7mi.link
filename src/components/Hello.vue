@@ -1,11 +1,7 @@
 <template>
   <div :class="['content', `view-${theme.theme}`]">
     <div class="hidden">
-      <iPhone>
-        <video class="media" onclick="play()">
-          <source src="https://yun.nana7mi.link/dance.mp4" type="video/mp4">
-        </video>
-      </iPhone>
+      <iPhone />
       <div class="tool">
         <div class="date shadow-container">{{ msg }}</div>
       </div>
@@ -19,57 +15,75 @@
       </div>
     </div>
     <div class="hidden">
-      <div class="fill shadow-container" :theme="theme.theme" style="width:268px;margin-bottom: 8px;">
-        <Swiper speed=2000 width="268px" :banner="banner" />
+      <div class="fill shadow-container" :theme="theme.theme" style="width:268px;margin-bottom: 8px;height: 167px;">
+        <Swiper speed="2000" width="268px" :pictures="pictures" />
       </div>
       <div class="sider">
         <div class="fill shadow-container" :theme="theme.theme" style="text-align: left;">
-          <Card :uid=434334701 ></Card>
+          <Card v-for="card in cards" :card="card" />
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import axios from 'axios'
-import { Theme, Picture } from './tool'
-import { ref, PropType } from 'vue'
+import { Theme, Picture, userInfo } from './tool'
+import { ref, PropType, defineProps } from 'vue'
 
 import Card from './Card.vue'
-import Swiper from './Swiper.vue'
 import iPhone from './iPhone.vue'
+import Swiper from './Swiper.vue'
 
-export default {
-  components: { Swiper, Card, iPhone },
-  props: {
-    theme: Object as PropType<Theme>
-  },
-  async setup() {
+const cards = ref([])
+const pictures = ref([])
+const msg = ref("阿米娅好可爱（戳戳试试")
 
-    async function getPic(bvid: string) {
-      let res = await axios.get(`https://aliyun.nana7mi.link/video.Video(${bvid}).get_info().pic?max_age=2592000`)
-      let pic: Picture = {
-        link: `https://www.bilibili.com/video/${bvid}`,
-        url: res.data.data
-      }
-      return pic
-    }
-
-    const msg = ref("阿米娅好可爱（戳戳试试")
-    const banner = ref([])
-
-    let bvs = [
-      "BV1Nd4y1E7Xi", "BV1NV4y1s7qy", "BV1Wq4y1g7SW", "BV1WQ4y1i7NH", "BV1Y541177Rg", "BV18q4y1z7Vv",
-      "BV1vJ411B7ng", "BV1n3411Y7fR", "BV1d34y1D7Vk", "BV1wT4y1r7g6", "BV1924y1R76y", "BV1JA4y1d7Bb",
-      "BV1yU4y1W7Y2", "BV1tU4y1R7qu", "BV1yf4y137XH", "BV16D4y177Ef", "BV1DK4y1g7zE", "BV19K4y1p7Zh"
-    ]
-    for (let bvid of bvs) {
-      banner.value.push(await getPic(bvid))
-    }
-
-    return { msg, banner }
+axios.get(`https://aliyun.nana7mi.link/live.LiveRoom(21452505).get_room_info()`).then(res => {
+  let data = res.data.data
+  let info: userInfo = {
+    cover_href: `https://live.bilibili.com/${data.room_info.room_id}`,
+    cover_url: data.room_info.cover,
+    face_href: `https://space.bilibili.com/${data.room_info.uid}`,
+    face_url: data.anchor_info.base_info.face,
+    pendant: "",
+    pendant_color: "rgb(251, 114, 153)",
+    title: data.anchor_info.base_info.uname,
+    title_color: "rgb(251, 114, 153)",
+    subtitle: `粉丝 ${data.anchor_info.relation_info.attention} - 舰长 ${data.guard_info.count}`
   }
+  cards.value.push(info)
+})
+
+TaskWaitAll([
+  "BV1Nd4y1E7Xi", "BV1NV4y1s7qy", "BV1Wq4y1g7SW", "BV1WQ4y1i7NH", "BV1Y541177Rg", "BV18q4y1z7Vv",
+  "BV1vJ411B7ng", "BV1n3411Y7fR", "BV1d34y1D7Vk", "BV1wT4y1r7g6", "BV1924y1R76y", "BV1JA4y1d7Bb",
+  "BV1yU4y1W7Y2", "BV1tU4y1R7qu", "BV1yf4y137XH", "BV16D4y177Ef", "BV1DK4y1g7zE", "BV19K4y1p7Zh"
+]).then(result => {
+  pictures.value = result
+  pictures.value.push(pictures.value[0])
+})
+
+defineProps({
+  theme: Object as PropType<Theme>
+})
+
+function TaskWaitAll(args: Array<String>) {
+  function getPicture(bv: String) {
+    return axios.get(`https://aliyun.nana7mi.link/video.Video(${bv}).get_info().pic?max_age=2592000`).then(
+      res => {
+        let pic: Picture = {
+          link: `https://www.bilibili.com/video/${bv}`,
+          url: res.data.data
+        }
+        return pic
+      }
+    )
+  }
+  let taskall = []
+  for (let arg of args) taskall.push(getPicture(arg))
+  return Promise.all(taskall)
 }
 </script>
 
@@ -92,13 +106,6 @@ export default {
   color: rgb(201, 209, 217);
   background-color: rgb(43, 43, 43);
   box-shadow: inset 0 0 0 1px rgb(48, 54, 61);
-}
-
-.media {
-  left: 50%;
-  transform: translateX(-50%);
-  position: relative;
-  height: 100%;
 }
 
 .post {

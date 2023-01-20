@@ -26,6 +26,7 @@ const router = createRouter({
     routes: [
         { path: '/', component: Hello },
         { path: '/login', component: Hello },
+        { path: '/phone', component: iPhone },
     ]
 })
 

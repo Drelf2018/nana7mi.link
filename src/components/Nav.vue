@@ -6,33 +6,41 @@
         <ion-icon :id="`ion-${theme.theme}`" :name="theme.theme == 'light' ? 'sunny' : 'moon'" style="vertical-align: -2px;"></ion-icon>
       </div>
       <input id="roomid" type="text" placeholder="支持模糊搜索动态">
-      <span>登录</span>
+      <Face :face="face" size="34px" />
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { ref, PropType } from 'vue'
-import { Theme } from './tool'
+<script setup lang="ts">
+import axios from 'axios'
+import { ref, PropType, defineProps } from 'vue'
+import { Theme, faceInfo } from './tool'
 
-export default {
-  props: {
-    src: String,
-    height: String,
-    theme: Object as PropType<Theme>
-  },
-  setup(props) {
-    const isCovered = ref(false)
-    const totalHeight = parseInt(props.height.replace("px", ""))
+import Face from './Face.vue'
 
-    window.addEventListener("scroll", () => {
-      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-      isCovered.value = totalHeight <= (64 + scrollTop)
-    })
+const props = defineProps({
+  src: String,
+  height: String,
+  theme: Object as PropType<Theme>
+})
 
-    return { isCovered }
-  }
+const isCovered = ref(false)
+const compareHeight = Math.max(1, props.theme.zoom) * (parseInt(props.height) - 64)
+
+window.onscroll = () => {
+  let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+  isCovered.value = compareHeight <= scrollTop
 }
+
+let res = await axios.get(`https://aliyun.nana7mi.link/user.User(188888131).get_user_info()`)
+let data = res.data.data
+let info: faceInfo = {
+  face_href: `https://space.bilibili.com/${data.mid}`,
+  face_url: data.face,
+  pendant: "",
+  pendant_color: data.vip.nickname_color,
+}
+const face = ref(info)
 </script>
 
 <style scoped>
