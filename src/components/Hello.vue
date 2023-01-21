@@ -1,5 +1,5 @@
 <template>
-  <div :class="['content', `view-${theme.theme}`]">
+  <div class="content" :theme="theme.theme">
     <div class="hidden">
       <iPhone />
       <div class="tool">
@@ -87,25 +87,31 @@ function TaskWaitAll(args: Array<String>) {
 }
 </script>
 
-<style scoped>
+<style>
 .shadow-container {
   position: relative;
   z-index: 1;
   padding: 16px;
   margin: 8px 4px;
   border-radius: 5px;
-  transition: background-color 0.2s ease 0, color 0.2s ease 0;
+  transition: background-color 0.2s, color 0.2s;
 }
 
-.view-light div .shadow-container {
+.content[theme=light] .shadow-container {
   background-color: #FFF;
-  box-shadow: 0 3px 1px -2px rgb(0 0 0 / 12%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 20%);
+  box-shadow: 0 3px 1px -2px rgb(0 0 0 / 12%),
+              0 2px 2px 0 rgb(0 0 0 / 14%),
+              0 1px 5px 0 rgb(0 0 0 / 20%);
 }
 
-.view-dark div .shadow-container {
+.content[theme=dark] .shadow-container {
   color: rgb(201, 209, 217);
   background-color: rgb(43, 43, 43);
-  box-shadow: inset 0 0 0 1px rgb(48, 54, 61);
+  box-shadow: 0 0 0 1px rgb(48, 54, 61) inset;
+}
+
+.content[theme=dark] .iPhone {
+  opacity: 0.5;
 }
 
 .post {
@@ -123,10 +129,6 @@ function TaskWaitAll(args: Array<String>) {
 .fill {
   padding: 0;
   transition: all 0.2s;
-}
-
-.fill[theme=light] {
-  opacity: 1;
 }
 
 .fill[theme=dark] {

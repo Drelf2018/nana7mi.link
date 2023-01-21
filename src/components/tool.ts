@@ -23,13 +23,16 @@ export class Theme {
     theme: string = "light"
     app: HTMLElement
     zoom: number
-    constructor(withoutSettingBackgroundColor: boolean) {
+    constructor(withoutSettingBackgroundColor: boolean, withoutSettingZoom: boolean) {
         this.app = document.getElementById("app")
         this.theme = localStorage.getItem("theme") || "light"
-        if(!withoutSettingBackgroundColor) this.setBackgroundColor()
-
-        this.setZoom()
-        window.onresize = this.setZoom
+        if (!withoutSettingBackgroundColor) this.setBackgroundColor()
+        if (!withoutSettingZoom) {
+            this.setZoom()
+            window.onresize = this.setZoom
+        } else {
+            this.zoom = 1
+        }
     }
     setZoom () {
         this.zoom = 0.8 * document.body.clientWidth / 1152

@@ -1,18 +1,17 @@
 <template>
-  <div :class="['nav-container', `nav-${theme.theme}`]" :style="'--height: ' + height">
+  <div class="nav-container" :theme="theme.theme" :style="'--height: ' + height">
     <div class="nav-picture" :style="`background-image: url(${src})`"></div>
     <div :class="[isCovered === true ? 'nav-covered' : '', 'nav-header']">
       <div class="nav-controler" @click="theme.modifyTheme">
-        <ion-icon :id="`ion-${theme.theme}`" :name="theme.theme == 'light' ? 'sunny' : 'moon'" style="vertical-align: -2px;"></ion-icon>
+        <ion-icon :id="`ion-${theme.theme}`" :name="theme.theme == 'light' ? 'sunny' : 'moon'" style="vertical-align: -4px;"></ion-icon>
       </div>
       <input id="roomid" type="text" placeholder="支持模糊搜索动态">
-      <Face :face="face" size="34px" />
+      <Face :face="face" style="--size: 34px" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import axios from 'axios'
 import { ref, PropType, defineProps } from 'vue'
 import { Theme, faceInfo } from './tool'
 
@@ -21,33 +20,25 @@ import Face from './Face.vue'
 const props = defineProps({
   src: String,
   height: String,
+  face: Object as PropType<faceInfo>,
   theme: Object as PropType<Theme>
 })
 
-const isCovered = ref(false)
 const compareHeight = Math.max(1, props.theme.zoom) * (parseInt(props.height) - 64)
+const isCovered = ref(compareHeight <= 0)
 
-window.onscroll = () => {
+if (!isCovered.value) window.onscroll = () => {
   let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
   isCovered.value = compareHeight <= scrollTop
 }
-
-let res = await axios.get(`https://aliyun.nana7mi.link/user.User(188888131).get_user_info()`)
-let data = res.data.data
-let info: faceInfo = {
-  face_href: `https://space.bilibili.com/${data.mid}`,
-  face_url: data.face,
-  pendant: "",
-  pendant_color: data.vip.nickname_color,
-}
-const face = ref(info)
 </script>
 
 <style scoped>
 .nav-controler {
+  width: 34px;
+  height: 34px;
   font-size: 24px;
   border-radius: 17px;
-  padding: 2px 5px 0px;
   transition: all 0.2s;
 }
 
@@ -59,31 +50,31 @@ const face = ref(info)
   color: rgb(255,228,53);
 }
 
-.nav-light .nav-header .nav-controler {
+.nav-container[theme=light] .nav-header .nav-controler {
   background-color: rgba(255,255,255,0.75);
 }
 
-.nav-light .nav-header .nav-controler:hover {
+.nav-container[theme=light] .nav-header .nav-controler:hover {
   background-color: rgba(255,255,255,1);
 }
 
-.nav-dark .nav-header .nav-controler {
+.nav-container[theme=dark] .nav-header .nav-controler {
   background-color: rgba(255,255,255,0.25);
 }
 
-.nav-dark .nav-header .nav-controler:hover {
+.nav-container[theme=dark] .nav-header .nav-controler:hover {
   background-color: rgba(255,255,255,0.35);
 }
 
-.nav-dark .nav-covered .nav-controler {
+.nav-container[theme=dark] .nav-covered .nav-controler {
   background-color: inherit;
 }
 
-.nav-light .nav-covered .nav-controler:hover {
+.nav-container[theme=light] .nav-covered .nav-controler:hover {
   background-color: rgba(0,0,0,0.1);
 }
 
-.nav-dark .nav-covered .nav-controler:hover {
+.nav-container[theme=dark] .nav-covered .nav-controler:hover {
   background-color: rgba(255,255,255,0.25);
 }
 
@@ -104,23 +95,23 @@ const face = ref(info)
   z-index: 100;
 }
 
-.nav-light .nav-header {
+.nav-container[theme=light] .nav-header {
   color: rgb(255, 255, 255);
   text-shadow: 0px 1px 3px black;
 }
 
-.nav-dark .nav-header {
+.nav-container[theme=dark] .nav-header {
   color: rgb(201, 209, 217);
 }
 
-.nav-light .nav-covered {
+.nav-container[theme=light] .nav-covered {
   color: black;
   text-shadow: none;
   background-color: white;
   box-shadow: inset 0 -1px hsl(210, 8%, 80%);
 }
 
-.nav-dark .nav-covered {
+.nav-container[theme=dark] .nav-covered {
   text-shadow: none;
   background-color: rgb(34,34,37);
   box-shadow: inset 0 -1px rgb(33, 38, 45);
@@ -137,7 +128,7 @@ const face = ref(info)
   transition: opacity 0.2s;
 }
 
-.nav-dark .nav-picture {
+.nav-container[theme=dark] .nav-picture {
   opacity: 0.5;
 }
 
@@ -147,34 +138,10 @@ const face = ref(info)
   }
 }
 
-input {
-  display: block;
-  box-sizing: border-box;
-  width: 592px;
-  height: 40px;
-  font-size: 1em;
-  font-weight: 540;
-  padding: 1px 0 0 0.5em;
-  border: 1px solid #ced4da;
-  border-radius: 0.5em;
-  transition: all 0.2s;
-  opacity: 0.5;
-}
 
-.nav-dark input:focus {
-  /* background-color: rgb(13, 17, 23); */
-  box-shadow: inset 0 -1px rgb(33, 38, 45);
-}
 
-input:hover {
-  opacity: 0.75;
-}
-
-input:focus {
-  border-color: #86b7fe;
-  outline: 0;
-  box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
-  opacity: 1;
+.nav-container[theme=dark] input:focus {
+  box-shadow: 0 0 0 0.1rem rgba(13, 109, 253, 0.1);
 }
 
 @media screen and (max-width: 750px) {

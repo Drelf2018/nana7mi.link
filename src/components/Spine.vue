@@ -79,7 +79,7 @@ class Amiya {
     this.element.style.left = this.element.offsetLeft + "px"
     if (Ani == "Interact") {
       setTimeout(() => this.state.setAnimation(0, "Relax", true), this.animations[3].time)
-      this.waitForStart()
+      setTimeout(this.waitForStart, this.animations[3].time - 1000)
     }
   }
   reverse(p0: number = 0.6) {
