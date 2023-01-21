@@ -27,7 +27,7 @@ const uid = ref("")
 const token = ref("")
 
 function login() {
-  axios.get("http://localhost:5784/login", { params: { uid: uid.value, token: token.value } }).then(
+  axios.get("http://api.nana7mi.link:5784/login", { params: { uid: uid.value, token: token.value } }).then(
     res => {
       localStorage.setItem("uid", uid.value)
       localStorage.setItem("token", res.data.token)
