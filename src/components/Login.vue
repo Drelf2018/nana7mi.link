@@ -10,9 +10,11 @@
         </h2>
         <input type="text" v-model="uid" placeholder="B站UID">
         <input type="password" v-model="token" placeholder="密码">
-        <em><span style="color: grey;font-size: 8px;">发送密码至
-          <a href="https://space.bilibili.com/1464240042" style="color: rgb(0, 161, 214)">@七海今天喝什么</a> 验证账号
-        </span></em>
+        <span style="color: grey;font-size: 8px;">
+          <em>发送密码至 </em>
+          <a href="https://space.bilibili.com/1464240042" style="color: rgb(0, 161, 214)" target="_blank">@七海今天喝什么</a>
+          <em> 验证账号</em>
+        </span>
         <button @click="login">登录</button>
       </div>
     </div>
@@ -30,7 +32,7 @@ function login() {
   axios.get("https://api.nana7mi.link:5784/login", { params: { uid: uid.value, token: token.value } }).then(
     res => {
       localStorage.setItem("uid", uid.value)
-      localStorage.setItem("token", res.data.token)
+      localStorage.setItem("token", token.value)
       window.history.go(-1)
     }
   )

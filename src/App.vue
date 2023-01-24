@@ -28,7 +28,6 @@ const face: Ref<faceInfo> = ref({
 axios.get("https://api.nana7mi.link:5784/login", { params: { uid: localStorage.getItem("uid"), token: localStorage.getItem("token") } }).then(
   res => {
     if (res.data.code != 0) throw res.data.error
-    localStorage.setItem("token", res.data.token)
     return res.data.url
   }
 ).then(
