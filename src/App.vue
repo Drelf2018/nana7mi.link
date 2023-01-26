@@ -45,6 +45,7 @@ axios.get("https://api.nana7mi.link:5784/login", { params: { uid: localStorage.g
   )
 ).catch(console.log)
 
+// axios.post("https://passport.bilibili.com/qrcode/getLoginInfo", { params: { oauthKey: "70d6740c218f446884f82cebaa15d48a" } }).then(console.log)
 </script>
 
 <style>
