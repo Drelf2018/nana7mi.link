@@ -39,7 +39,6 @@ app.directive('drag', (el) => {
     const minTop = oDiv.getAttribute('drag-min-top')
     const ifMoveSizeArea = 20
 
-    console.log(oDiv.style.getPropertyPriority("--zoom"));
     oDiv.onmousedown = e => {
         let target = oDiv
         

@@ -9,13 +9,18 @@
           <em><span style="color: grey;font-size: 8px;">账号不存在会自动注册</span></em>
         </h2>
         <input type="text" v-model="uid" placeholder="B站UID">
-        <input type="password" v-model="token" placeholder="密码">
-        <span style="color: grey;font-size: 8px;">
+        <button @click="getToken">获取验证码</button>
+        <div class="split"></div>
+        <span :class="{'no-token': token == '验证码', 'token': true}">
+          {{ token }}
+        </span>
+        <span style="color: grey;font-size: 12px;margin: 0.5em 0;">
           <em>发送密码至 </em>
-          <a href="https://space.bilibili.com/1464240042" style="color: rgb(0, 161, 214)" target="_blank">@七海今天喝什么</a>
+          <a href="https://t.bilibili.com/643451139714449427" style="color: rgb(0, 161, 214)" target="_blank">动态评论</a>
           <em> 验证账号</em>
         </span>
-        <button @click="login">登录</button>
+        <div class="split"></div>
+        <button @click="login">{{ canLogin ? '登录' : token == '验证码' ? '等待中' : '验证中' }}</button>
       </div>
     </div>
   </div>
@@ -26,20 +31,49 @@ import axios from 'axios'
 import { ref } from 'vue'
 
 const uid = ref("")
-const token = ref("")
+const token = ref("验证码")
+const canLogin = ref(false)
+
+let secret = ""
+let plan = null
+
+function getToken() {
+  let bid = parseInt(uid.value)
+  if (isNaN(bid)) return
+  axios.get("https://api.nana7mi.link/token?uid="+uid.value).then(
+    res => {
+      secret = res.data.data[0]
+      token.value = res.data.data[1]
+      if (plan) clearInterval(plan)
+      plan = setInterval(async () => {
+        let res = await axios.get("https://aliyun.nana7mi.link/comment.get_comments(643451139714449427,type,1:int).replies?var=type%3C-comment.CommentResourceType.DYNAMIC")
+        res.data.data.filter(r => r.member.mid == uid.value).forEach(r => {
+          if (r.content.message == token.value) {
+            canLogin.value = true
+            clearInterval(plan)
+            plan = null
+          }
+        })
+      }, 5000)
+    }
+  )
+}
 
 function login() {
-  axios.get("https://api.nana7mi.link:5784/login", { params: { uid: uid.value, token: token.value } }).then(
+  if (!canLogin.value) return
+  axios.get("https://api.nana7mi.link/register?uid="+uid.value+"&token="+secret).then(
     res => {
-      localStorage.setItem("uid", uid.value)
-      localStorage.setItem("token", token.value)
-      window.history.go(-1)
+      if (res.data.code == 0) {
+        localStorage.setItem("uid", uid.value)
+        localStorage.setItem("token", res.data.data)
+        window.history.go(-1)
+      }
     }
   )
 }
 </script>
 
-<style>
+<style scoped>
 .container {
   display: flex;
   /* justify-content: center; */
@@ -96,6 +130,25 @@ function login() {
   position: relative;
 }
 
+.split {
+  width: 98%;
+  margin: 0.5em auto;
+  border-bottom: solid 2px rgba(128,128,128,0.75);
+}
+
+.token {
+  line-height: 28px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 0.5em;
+  margin: 6px 0;
+  padding: 6px;
+}
+
+.no-token {
+  color: grey;
+  font-style: italic;
+}
+
 .login-form h2 {
   font-size: 18px;
   font-weight: 400;
@@ -104,14 +157,15 @@ function login() {
 .login-form input,
 .login-form button {
   margin: 6px 0;
-  width: 100%;
-  height: 36px;
+  height: 40px;
   border: none;
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: 0.5em;
   padding: 0 14px;
   color: #3d5245;
   font-family: HarmonyOS_Bold;
+  font-size: 16px;
+  transition: all 0.2s;
 }
 
 .login-form input::placeholder {
@@ -123,13 +177,7 @@ function login() {
   outline: 0;
 }
 
-.login-form button {
-  margin-top: 24px;
-  font-size: 16px;
-  transition: all 0.2s;
-}
-
-.login-form button:hover {
+.login-form button:hover, .login-form input:hover {
   background-color: rgba(255, 255, 255, 0.75)
 }
 </style>

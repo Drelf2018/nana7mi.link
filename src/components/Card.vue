@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, PropType, ref } from 'vue'
+import { defineProps, PropType } from 'vue'
 import { userInfo } from './tool'
 
 import Face from './Face.vue'
@@ -31,7 +31,11 @@ defineProps({ card: Object as PropType<userInfo> })
   height: 20px;
   z-index: 2;
   margin-top: -20px;
-  background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1))
+  background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+}
+
+.fill[theme=dark] .linear {
+  background-image: none;
 }
 
 .show {

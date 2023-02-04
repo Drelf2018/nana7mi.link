@@ -25,52 +25,25 @@ const face: Ref<faceInfo> = ref({
   pendant_color: ""
 })
 
-axios.get("https://api.nana7mi.link:5784/login", { params: { uid: localStorage.getItem("uid"), token: localStorage.getItem("token") } }).then(
+axios.get("https://api.nana7mi.link/login", { params: { uid: localStorage.getItem("uid"), token: localStorage.getItem("token") } }).then(
   res => {
     if (res.data.code != 0) throw res.data.error
-    return res.data.url
+    return res.data.data.uid
   }
 ).then(
-  url => axios.get(url).then(
-    res => {
-      let data = res.data.data
-      let info: faceInfo = {
-        face_href: `https://space.bilibili.com/${data.mid}`,
-        face_url: data.face,
-        pendant: "",
-        pendant_color: data.vip.nickname_color,
+  uid => {
+    axios.get(`https://aliyun.nana7mi.link/user.User(${uid}).get_user_info()`).then(
+      res => {
+        let data = res.data.data
+        let info: faceInfo = {
+          face_href: `https://space.bilibili.com/${data.uid}`,
+          face_url: data.face,
+          pendant: "",
+          pendant_color: data.vip.nickname_color,
+        }
+        face.value = info
       }
-      face.value = info
-    }
-  )
+    )
+  }
 ).catch(console.log)
-
-// axios.post("https://passport.bilibili.com/qrcode/getLoginInfo", { params: { oauthKey: "70d6740c218f446884f82cebaa15d48a" } }).then(console.log)
 </script>
-
-<style>
-input {
-  display: block;
-  box-sizing: border-box;
-  width: 592px;
-  height: 40px;
-  font-size: 1em;
-  font-weight: 540;
-  padding: 1px 0 0 0.5em;
-  border: 1px solid #ced4da;
-  border-radius: 0.5em;
-  transition: all 0.2s;
-  opacity: 0.65;
-}
-
-input:hover {
-  opacity: 0.85;
-}
-
-input:focus {
-  border-color: #86b7fe;
-  outline: 0;
-  box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
-  opacity: 1;
-}
-</style>

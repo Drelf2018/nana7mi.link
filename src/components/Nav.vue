@@ -108,13 +108,13 @@ if (!isCovered.value) window.onscroll = () => {
   color: black;
   text-shadow: none;
   background-color: white;
-  box-shadow: inset 0 -1px hsl(210, 8%, 80%);
+  box-shadow: 0 1px hsl(210deg 8% 80%)
 }
 
 .nav-container[theme=dark] .nav-covered {
   text-shadow: none;
   background-color: rgb(34,34,37);
-  box-shadow: inset 0 -1px rgb(33, 38, 45);
+  box-shadow: 0 1px rgb(33, 38, 45);
 }
 
 .nav-picture {
@@ -128,8 +128,48 @@ if (!isCovered.value) window.onscroll = () => {
   transition: opacity 0.2s;
 }
 
+/* .nav-picture::before {
+  content: "";
+  display: block;
+  width: 100%;
+  position: relative;
+  height: 20%;
+  top: 80%;
+  z-index: 2;
+  transition: all 0.2s;
+}
+
+.nav-container[theme=light] .nav-picture::before {
+  background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1))
+} */
+
 .nav-container[theme=dark] .nav-picture {
   opacity: 0.5;
+}
+
+input {
+  display: block;
+  box-sizing: border-box;
+  width: 592px;
+  height: 40px;
+  font-size: 1em;
+  font-weight: 540;
+  padding: 1px 0 0 0.5em;
+  border: 1px solid #ced4da;
+  border-radius: 0.5em;
+  transition: all 0.2s;
+  opacity: 0.65;
+}
+
+input:hover {
+  opacity: 0.85;
+}
+
+input:focus {
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
+  opacity: 1;
 }
 
 @media screen and (max-width: 1200px) {
@@ -137,8 +177,6 @@ if (!isCovered.value) window.onscroll = () => {
     background-position: 53%;
   }
 }
-
-
 
 .nav-container[theme=dark] input:focus {
   box-shadow: 0 0 0 0.1rem rgba(13, 109, 253, 0.1);

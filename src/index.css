@@ -18,8 +18,20 @@ body {
     transition: background-color 0.2s;
 }
 
+
+
 @media screen and (min-width: 1200px) {
     #app {
         zoom: max(1, var(--zoom));
     }
+    /* #app::after {
+        content: "";
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        background: url("https://danmu.nana7mi.link/bg.png") 0px center / cover no-repeat fixed;
+        z-index: -1;
+    } */
 }

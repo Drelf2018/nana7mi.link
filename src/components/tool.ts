@@ -18,8 +18,8 @@ export function debounce (fn: Function, delay=1000) {
 }
 
 export class Theme {
-    dark: string = "rgb(30, 30, 30)"
-    light: string = "rgb(246, 248, 250)"
+    dark: string = "rgba(30, 30, 30, 1)"
+    light: string = "rgba(246, 248, 250, 0.5)"
     theme: string = "light"
     app: HTMLElement
     zoom: number

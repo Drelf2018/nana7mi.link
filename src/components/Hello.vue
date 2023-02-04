@@ -1,4 +1,7 @@
 <template>
+  <!-- <div class="btn" :theme="theme.theme">
+      <span>你好</span>
+  </div> -->
   <div class="content" :theme="theme.theme">
     <div class="hidden">
       <iPhone />
@@ -88,17 +91,35 @@ function TaskWaitAll(args: Array<String>) {
 </script>
 
 <style>
+.btn {
+  height: 40px;
+  position: sticky;
+  top: 64px;
+  z-index: 50;
+  transition: all 0.2s;
+}
+
+.btn[theme=light] {
+  background-color: white;
+  box-shadow: 0 1px hsl(210deg 8% 80%)
+}
+
+.btn[theme=dark] {
+  background-color: rgb(34,34,37);
+  box-shadow: 0 1px rgb(33, 38, 45);
+}
+
 .shadow-container {
   position: relative;
   z-index: 1;
   padding: 16px;
   margin: 8px 4px;
   border-radius: 5px;
-  transition: background-color 0.2s, color 0.2s;
+  transition: all 0.2s;
 }
 
 .content[theme=light] .shadow-container {
-  background-color: #FFF;
+  background-color: rgba(255,255,255,0.75);
   box-shadow: 0 3px 1px -2px rgb(0 0 0 / 12%),
               0 2px 2px 0 rgb(0 0 0 / 14%),
               0 1px 5px 0 rgb(0 0 0 / 20%);
@@ -107,7 +128,7 @@ function TaskWaitAll(args: Array<String>) {
 .content[theme=dark] .shadow-container {
   color: rgb(201, 209, 217);
   background-color: rgb(43, 43, 43);
-  box-shadow: 0 0 0 1px rgb(48, 54, 61) inset;
+  box-shadow: 0 0 0 1px rgb(48, 54, 61);
 }
 
 .content[theme=dark] .iPhone {
@@ -122,6 +143,7 @@ function TaskWaitAll(args: Array<String>) {
 .sider, .tool {
   position: sticky;
   top: 72px;
+  /* top: 112px; */
   width: 276px;
   z-index: 1;
 }
