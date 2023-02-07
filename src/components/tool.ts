@@ -23,16 +23,24 @@ export class Theme {
     theme: string = "light"
     app: HTMLElement
     zoom: number
-    constructor(withoutSettingBackgroundColor: boolean, withoutSettingZoom: boolean) {
+    constructor() {
         this.app = document.getElementById("app")
-        this.theme = localStorage.getItem("theme") || "light"
-        if (!withoutSettingBackgroundColor) this.setBackgroundColor()
-        if (!withoutSettingZoom) {
-            this.setZoom()
-            window.onresize = this.setZoom
+
+        if(document.body.offsetWidth < 750) {
+            let timeNow = new Date().getHours()
+            if(timeNow >= 21 || timeNow < 6){
+                this.theme = "dark"
+            } else {
+                this.theme = "light"
+            }
         } else {
-            this.zoom = 1
+            this.theme = localStorage.getItem("theme") || "light"
         }
+        
+        this.setBackgroundColor()
+
+        this.setZoom()
+        window.onresize = this.setZoom
     }
     setZoom () {
         this.zoom = 0.8 * document.body.clientWidth / 1152

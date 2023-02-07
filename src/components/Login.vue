@@ -1,26 +1,29 @@
 <template>
-  <div class="container">
-    <div class="glass">
-      <ion-icon v-drag name="move-outline" class="move"></ion-icon>
-      <div class="login-form">
-        <h2>
-          登录到 <span style="color: rgb(0, 161, 214)">Nana7mi.link</span>
-          <br />
-          <em><span style="color: grey;font-size: 8px;">账号不存在会自动注册</span></em>
-        </h2>
-        <input type="text" v-model="uid" placeholder="B站UID">
-        <button @click="getToken">获取验证码</button>
-        <div class="split"></div>
-        <span :class="{'no-token': token == '验证码', 'token': true}">
-          {{ token }}
-        </span>
-        <span style="color: grey;font-size: 12px;margin: 0.5em 0;">
-          <em>发送密码至 </em>
-          <a href="https://t.bilibili.com/643451139714449427" style="color: rgb(0, 161, 214)" target="_blank">动态评论</a>
-          <em> 验证账号</em>
-        </span>
-        <div class="split"></div>
-        <button @click="login">{{ canLogin ? '登录' : token == '验证码' ? '等待中' : '验证中' }}</button>
+  <div ref="hidden" id="hidden-login-form" style="display: none;">
+    <div id="popLayer"></div>
+    <div class="container">
+      <ion-icon name="close" class="close" @click="close"></ion-icon>
+      <div class="glass">
+        <div class="login-form">
+          <h2>
+            登录到 <span style="color: rgb(0, 161, 214)">Nana7mi.link</span>
+            <br />
+            <em><span style="color: grey;font-size: 8px;">账号不存在会自动注册</span></em>
+          </h2>
+          <input type="text" v-model="uid" placeholder="B站UID">
+          <button @click="getToken">获取验证码</button>
+          <div class="split"></div>
+          <span :class="{'no-token': token == '验证码', 'token': true}">
+            {{ token }}
+          </span>
+          <span style="color: rgb(60,60,60);font-size: 12px;margin: 0.5em 0;">
+            <em>发送验证码至 </em>
+            <a href="https://t.bilibili.com/643451139714449427" style="color: rgb(255 74 64);" target="_blank">动态评论</a>
+            <em> 验证账号</em>
+          </span>
+          <div class="split"></div>
+          <button @click="login">{{ canLogin ? '登录' : token == '验证码' ? '等待中' : '验证中' }}</button>
+        </div>
       </div>
     </div>
   </div>
@@ -34,8 +37,14 @@ const uid = ref("")
 const token = ref("验证码")
 const canLogin = ref(false)
 
+const hidden = ref(null)
+
 let secret = ""
 let plan = null
+
+function close() {
+  hidden.value.style.display = "none"
+}
 
 function getToken() {
   let bid = parseInt(uid.value)
@@ -66,7 +75,7 @@ function login() {
       if (res.data.code == 0) {
         localStorage.setItem("uid", uid.value)
         localStorage.setItem("token", res.data.data)
-        window.history.go(-1)
+        location.reload()
       }
     }
   )
@@ -74,19 +83,34 @@ function login() {
 </script>
 
 <style scoped>
+#popLayer {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 110;
+    background-color: rgba(0,0,0,0.5);
+}
 .container {
+  position: fixed;
+  width: 800px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
-  /* justify-content: center; */
   align-items: flex-start;
-  height: calc(100vh - 64px);
-  background: url("https://danmu.nana7mi.link/bg.png") 0px center / cover no-repeat fixed;
-  overflow: hidden;
+  padding: 2em;
+  background: url("https://yun.nana7mi.link/afternoon.webp") 0px center / cover no-repeat fixed;
+  z-index: 120;
+  border-radius: 10px;
+  box-shadow: 0 3px 1px -2px rgb(0 0 0 / 32%),
+              0 2px 2px 0 rgb(0 0 0 / 34%),
+              0 1px 5px 0 rgb(0 0 0 / 40%);
 }
 
 .glass {
   width: 300px;
-  top: 16px;
-  left: calc(50vw - 150px);
   position: relative;
   border-radius: 20px;
   padding: 0.5em 1em;
@@ -104,22 +128,26 @@ function login() {
   top: -1em;
   left: -1em;
   background: inherit;
-  box-shadow: 0 0 0 152px rgba(255, 255, 255, 0.2) inset;
-  filter: blur(10px);
+  box-shadow: 0 0 0 182px rgba(255, 255, 255, 0.4) inset;
+  filter: blur(7px);
   z-index: -1;
 }
 
-.move {
+.close {
   font-size: 1.5em;
   position: absolute;
-  left: 0.4em;
-  top: 0.4em;
+  right: 0.5em;
+  top: 0.5em;
   padding: 0.25em;
-  border-radius: 10px;
+  border-radius: 1em;
+  color: white;
+  transition: all 0.2s;
 }
 
-.move:hover {
-  box-shadow: 0 1px 3px grey;
+.close:hover {
+  color: rgba(255, 0, 0, 0.75);
+  background-color: white;
+  box-shadow: 0 1px 3px white;
 }
 
 .login-form {
@@ -145,7 +173,7 @@ function login() {
 }
 
 .no-token {
-  color: grey;
+  color: rgb(60,60,60);
   font-style: italic;
 }
 

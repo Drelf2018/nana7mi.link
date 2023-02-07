@@ -6,13 +6,16 @@
         <ion-icon :id="`ion-${theme.theme}`" :name="theme.theme == 'light' ? 'sunny' : 'moon'" style="vertical-align: -4px;"></ion-icon>
       </div>
       <input id="roomid" type="text" placeholder="支持模糊搜索动态">
-      <Face :face="face" style="--size: 34px" />
+      <Face id="face" :login="face.face_href != ''" :face="face" style="--size: 34px" />
+      <div id="info" class="shadow-container" @mouseenter="info" @mouseleave="info">
+        <slot></slot>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, PropType, defineProps } from 'vue'
+import { ref, PropType, defineProps, onMounted } from 'vue'
 import { Theme, faceInfo } from './tool'
 
 import Face from './Face.vue'
@@ -31,9 +34,72 @@ if (!isCovered.value) window.onscroll = () => {
   let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
   isCovered.value = compareHeight <= scrollTop
 }
+
+function info(evt) {
+  switch(evt.type) {
+    case "mouseenter":
+      let style = window.getComputedStyle(evt.target)
+      if (style.opacity != "0") {
+        evt.target.classList.add(["show-info"])
+        document.getElementById("face").classList.add("show-face")
+      }
+      break
+    case "mouseleave":
+      evt.target.classList.remove(["show-info"])
+      document.getElementById("face").classList.remove("show-face")
+      break
+  }
+}
+
+onMounted(() => {
+  let f1 = document.getElementById("face")
+  let f2 = document.getElementById("info")
+  f2.style.left = f1.offsetLeft + f1.offsetWidth / 2 + "px"
+})
 </script>
 
 <style scoped>
+#info {
+  /* width: 150px; */
+  position: fixed;
+  top: 48px;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: all 0.35s ease 0.25s;
+  z-index: 105;
+  overflow: hidden;
+  padding: 16px;
+}
+
+.show-info {
+  top: 64px !important;
+  opacity: 1 !important;
+  transition: all 0.25s !important;
+}
+
+#face:hover + #info {
+  top: 64px;
+  opacity: 1;
+  transition: all 0.25s;
+}
+
+#face {
+  z-index: 107;
+  transition: all 0.35s ease 0.25s;
+}
+
+#face[login=true]:hover {
+  transform: translateY(35%);
+  transition: all 0.25s;
+  scale: 2;
+}
+
+.show-face[login=true] {
+  transform: translateY(35%);
+  transition: all 0.25s;
+  scale: 2;
+}
+
 .nav-controler {
   width: 34px;
   height: 34px;
@@ -95,26 +161,23 @@ if (!isCovered.value) window.onscroll = () => {
   z-index: 100;
 }
 
-.nav-container[theme=light] .nav-header {
-  color: rgb(255, 255, 255);
-  text-shadow: 0px 1px 3px black;
-}
-
 .nav-container[theme=dark] .nav-header {
   color: rgb(201, 209, 217);
 }
 
-.nav-container[theme=light] .nav-covered {
-  color: black;
+.nav-covered {
   text-shadow: none;
+  transition: all 0.2s;
+}
+
+.nav-container[theme=light] .nav-covered {
   background-color: white;
-  box-shadow: 0 1px hsl(210deg 8% 80%)
+  box-shadow: 0 1px hsl(210, 8%, 80%)
 }
 
 .nav-container[theme=dark] .nav-covered {
-  text-shadow: none;
   background-color: rgb(34,34,37);
-  box-shadow: 0 1px rgb(33, 38, 45);
+  box-shadow: 0 1px hsl(215, 15%, 15%);
 }
 
 .nav-picture {
@@ -128,21 +191,6 @@ if (!isCovered.value) window.onscroll = () => {
   transition: opacity 0.2s;
 }
 
-/* .nav-picture::before {
-  content: "";
-  display: block;
-  width: 100%;
-  position: relative;
-  height: 20%;
-  top: 80%;
-  z-index: 2;
-  transition: all 0.2s;
-}
-
-.nav-container[theme=light] .nav-picture::before {
-  background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1))
-} */
-
 .nav-container[theme=dark] .nav-picture {
   opacity: 0.5;
 }
@@ -150,7 +198,8 @@ if (!isCovered.value) window.onscroll = () => {
 input {
   display: block;
   box-sizing: border-box;
-  width: 592px;
+  width: calc(92% - 8px);
+  max-width: 592px;
   height: 40px;
   font-size: 1em;
   font-weight: 540;
@@ -183,8 +232,12 @@ input:focus {
 }
 
 @media screen and (max-width: 750px) {
-  input {
-    width: calc(80% - 8px);
+  .nav-container #face {
+    display: none;
+  }
+
+  .nav-container .nav-controler {
+    display: none;
   }
 }
 </style>
