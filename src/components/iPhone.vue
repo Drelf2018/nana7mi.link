@@ -47,7 +47,7 @@ function switchVideo() {
 
 .iPhone img {
     position: relative;
-    top: -100%;
+    top: -88.5%;
     left: 0;
     pointer-events: none;
     width: 100%;
@@ -55,7 +55,7 @@ function switchVideo() {
 }
 
 .ip-container {
-    margin: 23% 6%;
+    margin: 23% 6% 0;
     width: 88%;
     height: 77%;
     background-color: black;
