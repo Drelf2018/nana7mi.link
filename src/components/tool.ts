@@ -47,7 +47,7 @@ export class Theme {
         this.app.style.setProperty("--zoom", this.zoom.toString())
     }
     setBackgroundColor() {
-        this.app.style.backgroundColor = this[this.theme]
+        document.body.style.backgroundColor = this[this.theme]
     }
     modifyTheme() {
         this.theme = "lightdark".replace(this.theme, "")

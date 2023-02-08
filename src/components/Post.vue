@@ -1,9 +1,9 @@
 <template>
     <div class="shadow-container">
         <a :href="post.url" style="color: #2c3e50" target="_blank"><ion-icon name="arrow-redo-outline" class="goto"></ion-icon></a>
-        <Card :card="post.card" style="margin: -16px"></Card>
+        <Card :card="post.card" style="margin: -9px"></Card>
         <p v-html="post.text"></p>
-        <p style="color: grey;text-align: right;margin-bottom: 0;">{{ Format(new Date(post.time * 1000), "yy-MM-dd hh:mm:ss") }} {{ post.source }}</p>
+        <p style="color: grey;text-align: right;margin-bottom: 0;font-size: 12px;">{{ Format(new Date(post.time * 1000), "yy-MM-dd hh:mm:ss") }} {{ post.source }}</p>
         <Post v-if="post.repost" :post="post.repost"></Post>
     </div>
 </template>

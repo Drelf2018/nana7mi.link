@@ -54,6 +54,6 @@ defineProps({ card: Object as PropType<userInfo> })
 
 .subtitle {
   color: grey;
-  font-size: 8px;
+  font-size: 14px;
 }
 </style>
