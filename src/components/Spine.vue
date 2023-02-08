@@ -35,7 +35,7 @@ class Amiya {
     this.state = state
     this.lambda = lambda
     
-    for (let name of ["Special", "Interact"]) {
+    for (let name of ["Interact", "Interact"]) {
       let ani = state.data.skeletonData.findAnimation(name)
       this.animations.push({ name: name, time: Math.floor(1000 * ani.duration), loop: false})
     }

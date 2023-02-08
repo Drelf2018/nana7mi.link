@@ -1,6 +1,6 @@
 <template>
   <Login></Login>
-  <Nav src="https://yun.nana7mi.link/7mi.webp" height="200px" :theme="theme" :face="face">
+  <Nav src="https://yun.nana7mi.link/7mi.webp" height="200px" @search="searchHandler" :theme="theme" :face="face">
     <div v-if="face.face_href">
       <p id="p1" :style="'color: ' + face.pendant_color">{{ name }}</p>
       <p id="p2" style="color: grey;font-size:8px">{{ token }}</p>
@@ -19,31 +19,24 @@
     <div class="hidden">
       <iPhone />
       <div class="tool">
-        <div class="date shadow-container">{{ msg }}</div>
+        <div class="date shadow-container">鲨鱼好可爱（戳戳试试</div>
       </div>
     </div>
     <div class="post">
-      <div class="shadow-container" v-for="i in [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
-        <h3>Test{{ i }}</h3>
-        <ul>
-          <li v-for="j in ['aa', 'bb', 'cc', 'dd', 'ee']"><a href="/">vue-{{ j }}-{{ i }}</a></li>
-        </ul>
-      </div>
+      <Post :post="post" v-for="post in filterPosts"></Post>
     </div>
     <div class="hidden">
       <div class="fill shadow-container" :theme="theme.theme" style="width:268px;margin-bottom: 8px;height: 167px;">
         <Swiper speed="2000" width="268px" :pictures="pictures" />
       </div>
       <div class="sider">
-        <div class="fill shadow-container" :theme="theme.theme" style="text-align: left;">
+        <div class="fill shadow-container" :theme="theme.theme">
           <Card v-for="card in cards" :card="card" />
         </div>
       </div>
     </div>
   </div>
-  <Spine fileName="/build_char_002_amiya_test_1" y="-7" />
-  <Spine fileName="/build_char_358_lisa_lxh_1" lambda="5000" />
-  <Spine fileName="/build_char_391_rosmon_epoque_17" lambda="6000" />
+  <Spine fileName="https://api.nana7mi.link/image/build_char_1023_ghost2" lambda="4773" />
 </template>
 
 <script setup lang="ts">
@@ -54,6 +47,7 @@ import { ref, Ref } from 'vue'
 
 import Nav from './components/Nav.vue'
 import Card from './components/Card.vue'
+import Post from './components/Post.vue'
 import Login from './components/Login.vue'
 import Spine from './components/Spine.vue'
 import iPhone from './components/iPhone.vue'
@@ -61,8 +55,27 @@ import Swiper from './components/Swiper.vue'
 
 const uid = ref(localStorage.getItem("uid"))
 const token = ref(localStorage.getItem("token"))
+
 const me = ref()
+const name = ref("")
 const users = ref([])
+
+const posts = ref([])
+const search = ref("")
+const filterPosts = ref([])
+
+function searchHandler(search: string) {
+  if (search != "") {
+    filterPosts.value = posts.value.filter(
+      post => {
+        return post.text.includes(search)
+      }
+    )
+  } else {
+    filterPosts.value = posts.value
+  }
+}
+
 const theme = ref(new Theme)
 const face: Ref<faceInfo> = ref({
   face_href: "",
@@ -70,10 +83,8 @@ const face: Ref<faceInfo> = ref({
   pendant: "",
   pendant_color: ""
 })
-const name = ref("")
 const cards = ref([])
 const pictures = ref([])
-const msg = ref("阿米娅好可爱（戳戳试试")
 
 TaskWaitAll([
   "BV1Nd4y1E7Xi", "BV1NV4y1s7qy", "BV1Wq4y1g7SW", "BV1WQ4y1i7NH", "BV1Y541177Rg", "BV18q4y1z7Vv",
@@ -84,9 +95,40 @@ TaskWaitAll([
   pictures.value.push(pictures.value[0])
 })
 
+let NowTime = new Date().getTime() / 1000
+let PostPlan = setInterval(async () => {
+  if (posts.value.length < 5) {
+    NowTime -= 86400
+    let res = await axios.get("https://api.nana7mi.link/post", { params: { beginTs: NowTime } })
+    if (res.data.code == 0) {
+      res.data.data.forEach(post => {
+        let urls = post.face.split("/")
+        post.face = "https://api.nana7mi.link/image/" + urls[urls.length-1]
+        let card: userInfo = {
+          cover_href: null,
+          cover_url: null,
+          face_href: `https://weibo.com/u/${post.uid}`,
+          face_url: post.face,
+          pendant: post.pendant,
+          pendant_color: "rgb(251, 114, 153)",
+          title: post.name,
+          title_color: "rgb(251, 114, 153)",
+          subtitle: post.description
+        }
+        post.card = card
+        posts.value.push(post)
+      })
+    }
+  } else {
+    filterPosts.value = posts.value
+    clearInterval(PostPlan)
+    PostPlan = null
+  }
+}, 300)
+
 axios.get("https://api.nana7mi.link/login", { params: { uid: uid.value, token: token.value } }).then(
   res => {
-    if (res.data.code != 0) throw res.data.error
+    if (res.data.code != 0) throw res.data.data
     users.value = res.data.data
     res.data.data.filter(u => u.uid == uid.value).forEach(u => me.value = u)
     return me.value.uid
@@ -222,24 +264,6 @@ div[theme=dark] .shadow-container {
 .content {
   display: flex;
   justify-content: center;
-}
-
-h3 {
-  margin: 40px 0 0;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
 }
 
 @media screen and (min-width: 1200px) {

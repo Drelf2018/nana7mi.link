@@ -5,7 +5,7 @@
       <div class="nav-controler" @click="theme.modifyTheme">
         <ion-icon :id="`ion-${theme.theme}`" :name="theme.theme == 'light' ? 'sunny' : 'moon'" style="vertical-align: -4px;"></ion-icon>
       </div>
-      <input id="roomid" type="text" placeholder="支持模糊搜索动态">
+      <input v-model="search" type="text" placeholder="支持模糊搜索动态" @input="e => emit('search', search)">
       <Face id="face" :login="face.face_href != ''" :face="face" style="--size: 34px" />
       <div id="info" class="shadow-container" @mouseenter="info" @mouseleave="info">
         <slot></slot>
@@ -15,10 +15,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, PropType, defineProps, onMounted } from 'vue'
+import { ref, PropType, defineProps, onMounted, defineEmits } from 'vue'
 import { Theme, faceInfo } from './tool'
 
 import Face from './Face.vue'
+
+const emit = defineEmits(['search'])
 
 const props = defineProps({
   src: String,
@@ -27,6 +29,7 @@ const props = defineProps({
   theme: Object as PropType<Theme>
 })
 
+const search = ref("")
 const compareHeight = Math.max(1, props.theme.zoom) * (parseInt(props.height) - 64)
 const isCovered = ref(compareHeight <= 0)
 
@@ -145,6 +148,7 @@ onMounted(() => {
 }
 
 .nav-container {
+  text-align: center;
   height: var(--height);
 }
 

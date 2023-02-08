@@ -11,8 +11,8 @@
         <div class="dotList">
             <div class="dot" v-for="i in pictures.length - 1" :style="selected == i ? 'opacity: 1;' : 'opacity: 0.5;'" @click="tp(i)"></div>
         </div>
-        <ion-icon name="chevron-back-circle" class="btn" style="left: 0px" @click="move(-1)"></ion-icon>
-        <ion-icon name="chevron-forward-circle" class="btn" style="right: 0px" @click="move(1)"></ion-icon>
+        <ion-icon name="chevron-back-circle" class="swiper-btn" style="left: 0px" @click="move(-1)"></ion-icon>
+        <ion-icon name="chevron-forward-circle" class="swiper-btn" style="right: 0px" @click="move(1)"></ion-icon>
     </div>
 </template>
 
@@ -85,7 +85,7 @@ function moveNow(fro: number) {
     border-radius: 5px;
 }
 
-.btn {
+.swiper-btn {
     color: #F5F5F7;
     font-size: 40px;
     height: 20%;
@@ -116,11 +116,11 @@ function moveNow(fro: number) {
     box-shadow: 0 2px 3px grey;
 }
 
-.swiper-container:hover .btn {
+.swiper-container:hover .swiper-btn {
     opacity: 0.75;
 }
 
-.btn:hover {
+.swiper-btn:hover {
     opacity: 1 !important;
 }
 

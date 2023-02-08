@@ -1,12 +1,14 @@
 <template>
-  <a :href="card.cover_href" target="_blank"><img class="cover" :src="card.cover_url"></a>
-  <div class="linear"></div>
-  <div class="show">
-    <Face :face="card" style="--size: 60px; margin: 12px;" />
-    <strong>  
-      <p class="title" :style="`color: ${card.title_color};`">{{ card.title }}</p>
-      <span class="subtitle">{{ card.subtitle }}</span>
-    </strong>
+  <div>
+    <a :href="card.cover_href" target="_blank"><img class="cover" :src="card.cover_url"></a>
+    <div v-if="card.cover_href" class="linear"></div>
+    <div class="show">
+      <Face :face="card" style="--size: 60px; margin: 12px;" />
+      <strong>  
+        <p class="title" :style="`color: ${card.title_color};`">{{ card.title }}</p>
+        <span class="subtitle">{{ card.subtitle }}</span>
+      </strong>
+    </div>
   </div>
 </template>
 
