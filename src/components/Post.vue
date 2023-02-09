@@ -1,11 +1,19 @@
 <template>
     <div class="shadow-container">
-        <a :href="post.url" style="color: #2c3e50" target="_blank"><ion-icon name="arrow-redo-outline" class="goto"></ion-icon></a>
+        <a :href="post.url" style="color: inherit" target="_blank"><ion-icon name="arrow-redo-outline" class="goto"></ion-icon></a>
         <Card :card="post.card" style="margin: -9px"></Card>
         <p v-html="post.text"></p>
+
+        <div v-if="post.repost" class="shadow-container">
+            <a :href="post.repost.url" style="color: inherit" target="_blank"><ion-icon name="arrow-redo-outline" class="goto"></ion-icon></a>
+            <Card :card="post.repost.card" style="margin: -9px"></Card>
+            <p v-html="post.repost.text"></p>
+            <img :src="src" v-for="src in post.repost.picUrls" style="width: 100%">
+            <p style="color: grey;text-align: right;margin-bottom: 0;font-size: 12px;">{{ Format(new Date(post.repost.time * 1000), "yy-MM-dd hh:mm:ss") }} {{ post.repost.source }}</p>
+        </div>
+
         <img :src="src" v-for="src in post.picUrls" style="width: 100%">
         <p style="color: grey;text-align: right;margin-bottom: 0;font-size: 12px;">{{ Format(new Date(post.time * 1000), "yy-MM-dd hh:mm:ss") }} {{ post.source }}</p>
-        <Post v-if="post.repost" :post="post.repost"></Post>
     </div>
 </template>
 
@@ -13,12 +21,44 @@
 import { defineProps } from 'vue';
 import Card from './Card.vue'
 
-const prop = defineProps({ post: Object })
+const props = defineProps({ post: Object })
+const post = handler(props.post)
 
-switch (prop.post.type) {
-    case "weibo":
-        prop.post.url = `https://weibo.com/${prop.post.uid}/${prop.post.mid}`
-        break
+function handler(post) {
+    post.face = replaceUrl(post.face)
+    post.pendant = replaceUrl(post.pendant)
+    post.picUrls = replaceUrls(post.picUrls)
+    switch (post.type) {
+        case "weibo":
+            post.card = {
+                cover_href: null,
+                cover_url: null,
+                face_href: `https://weibo.com/u/${post.uid}`,
+                face_url: post.face,
+                pendant: post.pendant,
+                pendant_color: "rgb(251, 114, 153)",
+                title: post.name,
+                title_color: "rgb(251, 114, 153)",
+                subtitle: post.description
+            }
+            post.url = `https://weibo.com/${post.uid}/${post.mid}`
+            break
+    }
+    if (post.repost) post.repost = handler(post.repost)
+    return post
+}
+
+function replaceUrl(url: string) {
+  let name = url.split("/").pop()
+  if (name != "") {
+    return "https://api.nana7mi.link/image/" + name
+  }
+  return ""
+}
+
+function replaceUrls(urls: [string]) {
+  if (urls) return urls.map(replaceUrl)
+  return []
 }
 
 function Format(date, fmt) {
