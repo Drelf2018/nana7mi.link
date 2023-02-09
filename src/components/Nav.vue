@@ -185,6 +185,7 @@ onMounted(() => {
 }
 
 .nav-picture {
+  filter: contrast(90%);
   position: absolute;
   top: 0;
   width: 100%;

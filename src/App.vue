@@ -61,7 +61,6 @@ const name = ref("")
 const users = ref([])
 
 const posts = ref([])
-const search = ref("")
 const filterPosts = ref([])
 
 function searchHandler(search: string) {
@@ -95,15 +94,30 @@ TaskWaitAll([
   pictures.value.push(pictures.value[0])
 })
 
+function replaceUrl(urls) {
+  let res = []
+  for (let i in urls) {
+    let url_split = urls[i].split("/")
+    if (url_split[url_split.length-1]) {
+      res.push("https://api.nana7mi.link/image/" + url_split[url_split.length-1])
+    } else {
+      res.push("")
+    }
+  }
+  return res
+}
+
 let NowTime = new Date().getTime() / 1000
 let PostPlan = setInterval(async () => {
-  if (posts.value.length < 5) {
+  if (posts.value.length < 10) {
+    posts.value = []
     NowTime -= 86400
     let res = await axios.get("https://api.nana7mi.link/post", { params: { beginTs: NowTime } })
     if (res.data.code == 0) {
       res.data.data.forEach(post => {
-        let urls = post.face.split("/")
-        post.face = "https://api.nana7mi.link/image/" + urls[urls.length-1]
+        post.face = replaceUrl([post.face])[0]
+        post.pendant = replaceUrl([post.pendant])[0]
+        post.picUrls = replaceUrl(post.picUrls)
         let card: userInfo = {
           cover_href: null,
           cover_url: null,
@@ -116,7 +130,7 @@ let PostPlan = setInterval(async () => {
           subtitle: post.description
         }
         post.card = card
-        posts.value.push(post)
+        posts.value.unshift(post)
       })
     }
   } else {
