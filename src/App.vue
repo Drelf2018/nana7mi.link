@@ -17,7 +17,7 @@
   </Nav>
   <div class="content" :theme="theme.theme">
     <div class="hidden">
-      <iPhone />
+      <iPhone :src="src"/>
       <div class="tool">
         <div class="date shadow-container">鲨鱼好可爱（戳戳试试</div>
       </div>
@@ -53,6 +53,9 @@ import Login from './components/Login.vue'
 import Spine from './components/Spine.vue'
 import iPhone from './components/iPhone.vue'
 import Swiper from './components/Swiper.vue'
+
+// 自动播放好运来
+const src = ref("")
 
 // 本地账户信息
 const uid = ref(localStorage.getItem("uid"))
@@ -122,6 +125,7 @@ setInterval(async () => {
   let res = await axios.get("https://api.nana7mi.link/post")
   if (res.data.code == 0) {
     if (res.data.data.length > 0) {
+      src.value = "https://upos-sz-mirrorhw.bilivideo.com/upgcxcode/22/20/313232022/313232022-1-16.mp4?e=ig8euxZM2rNcNbRVhwdVhwdlhWdVhwdVhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&uipk=5&nbs=1&deadline=1675958683&gen=playurlv2&os=hwbv&oi=2032715548&trid=15cd8158b1f64542a2c52f7d052d29f0h&mid=0&platform=html5&upsig=5ec226af31c0f1503576750df9d55cbf&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&bvc=vod&nettype=0&bw=53007&logo=80000000"
       FuturePosts.value = res.data.data.reverse().concat(FuturePosts.value)
       searchHandler("")
     } 

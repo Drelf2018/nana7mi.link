@@ -2,7 +2,7 @@
     <div class="iPhone">
         <div class="ip-container">
             <slot>
-                <video ref="veo" class="media" :muted="vid == 0" autoplay :src="URL + videoList[vid]" @click="switchVideo">
+                <video ref="veo" class="media" :muted="vid == 0" autoplay :src="src == '' ? URL + videoList[vid] : src" @click="switchVideo">
                 </video>
             </slot>
         </div>
@@ -11,7 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, defineProps } from 'vue'
+
+defineProps({ src: String })
 
 const vid = ref(0)
 const veo = ref(null)
