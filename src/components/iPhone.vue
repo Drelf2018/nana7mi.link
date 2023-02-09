@@ -35,23 +35,15 @@ function switchVideo() {
     width: 276px;
     height: 554px;
     z-index: 2;
-}
-
-@media screen and (max-width: 1200px) {
-    .iPhone {
-        padding-top: 0;
-        width: calc(100vw - 17px);
-        height: calc(200vw - 34px);
-    }
+    position: relative;
 }
 
 .iPhone img {
-    position: relative;
-    top: -88.5%;
+    position: absolute;
+    top: 8px;
     left: 0;
     pointer-events: none;
     width: 100%;
-    height: 100%;
 }
 
 .ip-container {

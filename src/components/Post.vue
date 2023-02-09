@@ -18,11 +18,11 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { defineProps, ref } from 'vue';
 import Card from './Card.vue'
 
-const props = defineProps({ post: Object })
-const post = handler(props.post)
+const props = defineProps({ opost: Object })
+const post = ref(handler(props.opost))
 
 function handler(post) {
     post.face = replaceUrl(post.face)
