@@ -24,15 +24,14 @@ const videoList = ref([
 ])
 const video = ref(null)
 
-function switchVideo() {
-    src.value = ""
-    vid.value = vid.value % (videoList.value.length - 1) + 1
-    video.value.play()
-}
-
 function play(url: string) {
     src.value = url
-    video.value.play()
+    setTimeout(() => video.value.play().catch(console.log), 1)
+}
+
+function switchVideo() {
+    vid.value = vid.value % (videoList.value.length - 1) + 1
+    play("")
 }
 
 defineExpose({ play })
