@@ -102,7 +102,7 @@ const BeginTime = ref(new Date().getTime() / 1000)
 async function GetPastPost() {
   if (BeginTime.value <= 1675768827) return
   BeginTime.value -= 86400
-  let res = await axios.get("https://api.nana7mi.link/post", { params: { beginTs: BeginTime.value, stopTs: BeginTime.value + 86400 } })
+  let res = await axios.get("https://api.nana7mi.link/post", { params: { beginTs: BeginTime.value, endTs: BeginTime.value + 86400 } })
   if (res.data.code == 0) {
     PastPosts.value = PastPosts.value.concat(res.data.data.reverse())
     searchHandler("")
@@ -188,7 +188,14 @@ function clean() {
 
 // 搜索栏过滤函数
 function searchHandler(search: string) {
-  let TotalPosts = FuturePosts.value.concat(PastPosts.value)
+  let TotalPosts = FuturePosts.value.concat(PastPosts.value).filter(
+    post => {
+      let watch = post.type+post.uid
+      if (watch == "weibo7198559139") return true
+      else if (me.value && me.value.watch.length > 0 && watch in me.value.watch) return true
+      return false
+    }
+  )
   if (search != "") {
     FilterPosts.value = TotalPosts.filter(post => post.text.includes(search))
   } else {
@@ -202,7 +209,7 @@ function TaskWaitAll(args: Array<String>) {
       res => {
         let pic: Picture = {
           link: `https://www.bilibili.com/video/${bv}`,
-          url: res.data.data
+          url: res.data.data.replace("http://", "https://")
         }
         return pic
       }
