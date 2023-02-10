@@ -1,5 +1,5 @@
 <template>
-  <Login></Login>
+  <Login />
   <Nav src="https://yun.nana7mi.link/7mi.webp" height="200px" @search="searchHandler" :theme="theme" :face="face">
     <div v-if="face.face_href">
       <p id="p1" :style="'color: ' + face.pendant_color">{{ name }}</p>
@@ -17,14 +17,14 @@
   </Nav>
   <div class="content" :theme="theme.theme">
     <div class="hidden">
-      <iPhone :src="src"/>
+      <iPhone ref="Phone" />
       <div class="tool">
         <div class="date shadow-container">鲨鱼好可爱（戳戳试试</div>
       </div>
     </div>
     <div class="post">
-      <Post :key="post.type + post.mid" :opost="post" v-for="post in FilterPosts"></Post>
-      <p v-if="AllPasts" style="text-align: center;">—— 到底了啦 ——</p>
+      <Post :key="post.type + post.mid" :opost="post" v-for="post in FilterPosts" />
+      <p v-if="BeginTime <= 1675768827" style="text-align: center;">—— 到底了啦 ——</p>
     </div>
     <div class="hidden">
       <div class="fill shadow-container" :theme="theme.theme" style="width:268px;margin-bottom: 8px;height: 167px;">
@@ -54,8 +54,8 @@ import Spine from './components/Spine.vue'
 import iPhone from './components/iPhone.vue'
 import Swiper from './components/Swiper.vue'
 
-// 自动播放好运来
-const src = ref("")
+// 自动播放好运来的组件
+const Phone = ref(null)
 
 // 本地账户信息
 const uid = ref(localStorage.getItem("uid"))
@@ -67,7 +67,6 @@ const name = ref("")
 const users = ref([])
 
 // 博文数据
-const AllPasts = ref(false)
 const PastPosts = ref([])
 const FuturePosts = ref([])
 const FilterPosts = ref([])
@@ -85,6 +84,9 @@ const face: Ref<faceInfo> = ref({
 const cards = ref([])
 const pictures = ref([])
 
+// 登录
+login(uid.value, token.value).then(getFace).catch(console.log)
+
 // 获取画框封面
 TaskWaitAll([
   "BV1Nd4y1E7Xi", "BV1NV4y1s7qy", "BV1Wq4y1g7SW", "BV1WQ4y1i7NH", "BV1Y541177Rg", "BV18q4y1z7Vv",
@@ -96,19 +98,16 @@ TaskWaitAll([
 })
 
 // 获取博文函数
-let NowTime = new Date().getTime() / 1000
-const GetPastPost = function(NowTime: number) {
-  let BeginTime = NowTime
-  return async function() {
-    BeginTime -= 86400 
-    let res = await axios.get("https://api.nana7mi.link/post", { params: { beginTs: BeginTime, stopTs: BeginTime + 86400 } })
-    if (res.data.code == 0) {
-      PastPosts.value = PastPosts.value.concat(res.data.data.reverse())
-      if (PastPosts.value[PastPosts.value.length-1].time == 1675768827) AllPasts.value = true      
-    }
+const BeginTime = ref(new Date().getTime() / 1000)
+async function GetPastPost() {
+  if (BeginTime.value <= 1675768827) return
+  BeginTime.value -= 86400
+  let res = await axios.get("https://api.nana7mi.link/post", { params: { beginTs: BeginTime.value, stopTs: BeginTime.value + 86400 } })
+  if (res.data.code == 0) {
+    PastPosts.value = PastPosts.value.concat(res.data.data.reverse())
     searchHandler("")
   }
-}(NowTime)
+}
 
 // 获取一定数量的初始博文
 GetPastPost()
@@ -124,11 +123,14 @@ let PastPlan = setInterval(() => {
 setInterval(async () => {
   let res = await axios.get("https://api.nana7mi.link/post")
   if (res.data.code == 0) {
-    if (res.data.data.length > 0) {
-      src.value = "https://upos-sz-mirrorhw.bilivideo.com/upgcxcode/22/20/313232022/313232022-1-16.mp4?e=ig8euxZM2rNcNbRVhwdVhwdlhWdVhwdVhoNvNC8BqJIzNbfq9rVEuxTEnE8L5F6VnEsSTx0vkX8fqJeYTj_lta53NCM=&uipk=5&nbs=1&deadline=1675958683&gen=playurlv2&os=hwbv&oi=2032715548&trid=15cd8158b1f64542a2c52f7d052d29f0h&mid=0&platform=html5&upsig=5ec226af31c0f1503576750df9d55cbf&uparams=e,uipk,nbs,deadline,gen,os,oi,trid,mid,platform&bvc=vod&nettype=0&bw=53007&logo=80000000"
-      FuturePosts.value = res.data.data.reverse().concat(FuturePosts.value)
+    res.data.data.forEach(async post => {
+      if (FuturePosts.value.length == 0) FuturePosts.value = [post]
+      else if (FuturePosts.value[0].time != post.time) FuturePosts.value.unshift(post)
+      else return
+      let res = await axios.get("https://aliyun.nana7mi.link/video.Video(bvid=BV1ty4y1E7w9).get_download_url(0:int,html5=1).durl")
+      Phone.value.play(res.data.data[0].url)
       searchHandler("")
-    } 
+    })
   }
 }, 5000)
 
@@ -137,36 +139,8 @@ window.addEventListener('scroll', () => {
   let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
   let clientHeight = document.documentElement.clientHeight;
   let scrollHeight = document.documentElement.scrollHeight;
-  if (scrollTop + clientHeight >= scrollHeight) {
-    if (!AllPasts.value) GetPastPost()
-  }
+  if (scrollTop + clientHeight >= scrollHeight) GetPastPost()
 })
-
-// 登录
-axios.get("https://api.nana7mi.link/login", { params: { uid: uid.value, token: token.value } }).then(
-  res => {
-    if (res.data.code != 0) throw res.data.data
-    users.value = res.data.data
-    res.data.data.filter(u => u.uid == uid.value).forEach(u => me.value = u)
-    return me.value.uid
-  }
-).then(
-  uid => {
-    axios.get(`https://aliyun.nana7mi.link/user.User(${uid}).get_user_info()`).then(
-      res => {
-        let data = res.data.data
-        name.value = data.name
-        let info: faceInfo = {
-          face_href: `https://space.bilibili.com/${data.mid}`,
-          face_url: data.face,
-          pendant: data.pendant.image,
-          pendant_color: data.vip.nickname_color,
-        }
-        face.value = info
-      }
-    )
-  }
-).catch(console.log)
 
 // 卡片
 axios.get(`https://aliyun.nana7mi.link/live.LiveRoom(21452505).get_room_info()`).then(res => {
@@ -184,6 +158,28 @@ axios.get(`https://aliyun.nana7mi.link/live.LiveRoom(21452505).get_room_info()`)
   }
   cards.value.push(info)
 })
+
+// 登录
+async function login(uid: string, token: string) {
+  let res = await axios.get("https://api.nana7mi.link/login", { params: { uid: uid, token: token } })
+  if (res.data.code != 0) throw res.data.data
+  res.data.data.filter(u => u.uid == uid).forEach(u => me.value = u)
+  users.value = res.data.data
+}
+
+// 获取用户头像
+async function getFace() {
+  let res = await axios.get(`https://aliyun.nana7mi.link/user.User(${uid.value}).get_user_info()`)
+  let data = res.data.data
+  let info: faceInfo = {
+    face_href: `https://space.bilibili.com/${data.mid}`,
+    face_url: data.face,
+    pendant: data.pendant.image,
+    pendant_color: data.vip.nickname_color,
+  }
+  name.value = data.name
+  face.value = info
+}
 
 function clean() {
   localStorage.setItem("token", "")

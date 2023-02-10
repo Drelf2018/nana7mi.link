@@ -2,7 +2,7 @@
     <div class="iPhone">
         <div class="ip-container">
             <slot>
-                <video ref="veo" class="media" :muted="vid == 0" autoplay :src="src == '' ? URL + videoList[vid] : src" @click="switchVideo">
+                <video ref="video" class="media" :muted="vid == 0" autoplay :src="src == '' ? URL + videoList[vid] : src" @click="switchVideo">
                 </video>
             </slot>
         </div>
@@ -11,12 +11,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps } from 'vue'
-
-defineProps({ src: String })
+import { ref, defineExpose } from 'vue'
 
 const vid = ref(0)
-const veo = ref(null)
+const src = ref("")
 const URL = ref("https://yun.nana7mi.link/video")
 const videoList = ref([
     "/start.webm",
@@ -24,11 +22,20 @@ const videoList = ref([
     "/啾、多样性。.mp4",
     "/SexyBack.mp4",
 ])
+const video = ref(null)
 
 function switchVideo() {
+    src.value = ""
     vid.value = vid.value % (videoList.value.length - 1) + 1
-    veo.value.play()
+    video.value.play()
 }
+
+function play(url: string) {
+    src.value = url
+    video.value.play()
+}
+
+defineExpose({ play })
 </script>
 
 <style scoped>
