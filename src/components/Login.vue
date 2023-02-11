@@ -13,9 +13,7 @@
           <input type="text" v-model="uid" placeholder="B站UID">
           <button @click="getToken">获取验证码</button>
           <div class="split"></div>
-          <span :class="{'no-token': token == '验证码', 'token': true}">
-            {{ token }}
-          </span>
+          <span class="token">{{ token }}</span>
           <span style="color: rgb(60,60,60);font-size: 12px;margin: 0.5em 0;">
             <em>发送验证码至 </em>
             <a href="https://t.bilibili.com/643451139714449427" style="color: rgb(255 74 64);" target="_blank">动态评论</a>
@@ -82,15 +80,15 @@ function login() {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 #popLayer {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    z-index: 110;
-    background-color: rgba(0,0,0,0.5);
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 110;
+  background-color: rgba(0,0,0,0.5);
 }
 .container {
   position: fixed;
@@ -118,19 +116,19 @@ function login() {
   overflow: hidden;
   z-index: 2;
   background: inherit;
-}
-
-.glass::before {
-  content: "";
-  position: absolute;
-  width: calc(100% + 2em);
-  height: calc(100% + 2em);
-  top: -1em;
-  left: -1em;
-  background: inherit;
-  box-shadow: 0 0 0 182px rgba(255, 255, 255, 0.4) inset;
-  filter: blur(7px);
-  z-index: -1;
+  
+  &::before {
+    content: "";
+    position: absolute;
+    width: calc(100% + 2em);
+    height: calc(100% + 2em);
+    top: -1em;
+    left: -1em;
+    background: inherit;
+    box-shadow: 0 0 0 182px rgba(255, 255, 255, 0.4) inset;
+    filter: blur(7px);
+    z-index: -1;
+  }
 }
 
 .close {
@@ -142,12 +140,12 @@ function login() {
   border-radius: 1em;
   color: white;
   transition: all 0.2s;
-}
 
-.close:hover {
-  color: rgba(255, 0, 0, 0.75);
-  background-color: white;
-  box-shadow: 0 1px 3px white;
+  &:hover {
+    color: rgba(255, 0, 0, 0.75);
+    background-color: white;
+    box-shadow: 0 1px 3px white;
+  }
 }
 
 .login-form {
@@ -156,6 +154,37 @@ function login() {
   margin: 20px 30px;
   text-align: center;
   position: relative;
+
+  h2 {
+    font-size: 18px;
+    font-weight: 400;
+  }
+
+  input, button {
+    margin: 6px 0;
+    height: 40px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 0.5em;
+    padding: 0 14px;
+    color: #3d5245;
+    font-family: HarmonyOS_Bold;
+    font-size: 16px;
+    transition: all 0.2s;
+  }
+
+  input::placeholder {
+    color: #3d5245;
+  }
+
+  button:focus, input:focus {
+    outline: 0;
+    background-color: rgba(255, 255, 255, 0.75);
+  }
+
+  button:hover, input:hover {
+    background-color: rgba(255, 255, 255, 0.75);
+  }
 }
 
 .split {
@@ -170,42 +199,5 @@ function login() {
   border-radius: 0.5em;
   margin: 6px 0;
   padding: 6px;
-}
-
-.no-token {
-  color: rgb(60,60,60);
-  font-style: italic;
-}
-
-.login-form h2 {
-  font-size: 18px;
-  font-weight: 400;
-}
-
-.login-form input,
-.login-form button {
-  margin: 6px 0;
-  height: 40px;
-  border: none;
-  background-color: rgba(255, 255, 255, 0.5);
-  border-radius: 0.5em;
-  padding: 0 14px;
-  color: #3d5245;
-  font-family: HarmonyOS_Bold;
-  font-size: 16px;
-  transition: all 0.2s;
-}
-
-.login-form input::placeholder {
-  color: #3d5245;
-}
-
-.login-form button:focus,
-.login-form input:focus {
-  outline: 0;
-}
-
-.login-form button:hover, .login-form input:hover {
-  background-color: rgba(255, 255, 255, 0.75)
 }
 </style>

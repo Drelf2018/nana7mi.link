@@ -1,0 +1,30 @@
+$themes: (
+    light:(
+        linear: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1)),
+        nav-show: rgba(255,255,255,0.75),
+        nav-show-hover: rgba(255,255,255,1),
+        nav-cover: inherit,
+        nav-cover-hover: rgba(0,0,0,0.1),
+        input-focus: none,
+        nav-cover-color: white,
+        nav-cover-shadow: 0 1px hsl(210, 8%, 80%),
+        shadow-container-color: inherit,
+        shadow-container-back: white,
+        shadow-container-box: inherit,
+        fill: 1,
+    ),
+    dark:(
+        linear: none,
+        nav-show: rgba(255,255,255,0.25),
+        nav-show-hover: rgba(255,255,255,0.35),
+        nav-cover: inherit,
+        nav-cover-hover: rgba(255,255,255,0.25),
+        input-focus: 0 0 0 0.1rem rgba(13, 109, 253, 0.1),
+        nav-cover-color: rgb(34,34,37),
+        nav-cover-shadow: 0 1px hsl(215, 15%, 15%),
+        shadow-container-color: rgb(201, 209, 217),
+        shadow-container-back: rgb(43, 43, 43),
+        shadow-container-box: 0 0 0 1px rgb(48, 54, 61),
+        fill: 0.5,
+    )
+)

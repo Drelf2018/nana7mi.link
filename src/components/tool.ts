@@ -20,7 +20,7 @@ export function debounce (fn: Function, delay=1000) {
 export class Theme {
     dark: string = "rgba(30, 30, 30, 1)"
     light: string = "rgba(246, 248, 250, 0.5)"
-    theme: string = "light"
+    theme: string
     app: HTMLElement
     zoom: number
     constructor() {
@@ -42,12 +42,16 @@ export class Theme {
         this.setZoom()
         window.onresize = this.setZoom
     }
+    getHeight() {
+        return 100 / Math.max(1, this.zoom)
+    }
     setZoom () {
         this.zoom = 0.8 * document.body.clientWidth / 1152
         this.app.style.setProperty("--zoom", this.zoom.toString())
     }
     setBackgroundColor() {
         document.body.style.backgroundColor = this[this.theme]
+        this.app.setAttribute("data-theme", this.theme)
     }
     modifyTheme() {
         this.theme = "lightdark".replace(this.theme, "")

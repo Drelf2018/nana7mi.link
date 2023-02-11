@@ -1,8 +1,8 @@
 <template>
   <a v-if="face.face_href" :href="face.face_href" target="_blank">
-    <div class="face" :url="face.pendant != ''">
+    <div class="face">
       <img id="pendant" :src="face.pendant">
-      <img id="profile" :src="face.face_url" :style="`outline-color: ${face.pendant_color}`">
+      <img id="profile" :src="face.face_url" :url="face.pendant != ''" :style="`outline-color: ${face.pendant_color}`">
     </div>
   </a>
   <a v-else href="javascript:;" class="login" @click="login"><div>登录</div></a>
@@ -19,37 +19,37 @@ function login() {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .face {
   width: var(--size);
   height: var(--size);
   position: relative;
   background-size: contain;
-}
 
-.face[url=false] #profile {
-  outline-style: solid;
-  outline-width: 0.0428 * var(--size);
-}
+  #pendant {
+    --alpha: 1.6;
+    height: calc(var(--size) * var(--alpha));
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 
-.face #pendant {
-  --alpha: 1.6;
-  height: calc(var(--size) * var(--alpha));
-  position: relative;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.face #profile {
-  position: absolute;
-  height: var(--size);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: -1;
-  border-radius: 50%;
-  outline-color: rgb(0, 161, 214);
+  #profile {
+    position: absolute;
+    height: var(--size);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    border-radius: 50%;
+    outline-color: rgb(0, 161, 214);
+  }
+  
+  #profile[url=false]  {
+    outline-style: solid;
+    outline-width: calc(0.05 * var(--size));
+  }
 }
 
 .login {
@@ -58,13 +58,13 @@ function login() {
   text-decoration: none;
   border-radius: 50%;
   overflow: hidden;
-}
 
-.login div {
-  width: 34px;
-  line-height: 34px;
-  text-align: center;
-  background-color: rgb(0, 161, 214);
-  text-shadow: none !important;
+  div {
+    width: 34px;
+    line-height: 34px;
+    text-align: center;
+    background-color: rgb(0, 161, 214);
+    text-shadow: none !important;
+  }
 }
 </style>

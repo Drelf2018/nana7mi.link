@@ -1,8 +1,8 @@
 <template>
     <div class="iPhone">
-        <div class="ip-container">
+        <div>
             <slot>
-                <video ref="video" class="media" :muted="vid == 0" autoplay :src="src == '' ? URL + videoList[vid] : src" @click="switchVideo">
+                <video ref="video" :muted="vid == 0" autoplay :src="src == '' ? URL + videoList[vid] : src" @click="switchVideo">
                 </video>
             </slot>
         </div>
@@ -37,32 +37,36 @@ function switchVideo() {
 defineExpose({ play })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .iPhone {
     padding-top: 8px;
     width: 276px;
     height: 554px;
     z-index: 2;
     position: relative;
-}
 
-.iPhone img {
-    position: absolute;
-    top: 8px;
-    left: 0;
-    pointer-events: none;
-    width: 100%;
-}
+    @include themeify{
+        opacity: themed('fill');
+    }
 
-.ip-container {
-    margin: 23% 6% 0;
-    width: 88%;
-    height: 77%;
-    background-color: black;
-}
+    div {
+        margin: 23% 6% 0;
+        width: 88%;
+        height: 77%;
+        background-color: black;
 
-.media {
-  height: 100%;
-  width: 100%;
+        video {
+            height: 100%;
+            width: 100%;
+        }
+    }
+
+    img {
+        position: absolute;
+        top: 8px;
+        left: 0;
+        pointer-events: none;
+        width: 100%;
+    }
 }
 </style>

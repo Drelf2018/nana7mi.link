@@ -1,6 +1,19 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
+  css: {
+    preprocessorOptions: {
+        scss: {
+          additionalData: '@import "./src/assets/scss/global.scss";'
+        }
+    }
+  },
   transpileDependencies: true,
+  pluginOptions: {
+    'style-resources-loader': {
+      preProcessor: 'scss',
+      patterns: []
+    }
+  },
   chainWebpack: config => {
     config.module
       .rule('vue')

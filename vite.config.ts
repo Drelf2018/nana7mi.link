@@ -1,14 +1,33 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
  
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+
 export default defineConfig({
-    plugins: [vue({
-        template: {
-            compilerOptions: {
-                isCustomElement: tag => tag.startsWith('ion-')
+    css: {
+        preprocessorOptions: {
+            scss: {
+              additionalData: '@import "./src/assets/scss/global.scss";'
             }
         }
-    })],
+    },
+    plugins: [
+        vue({
+            template: {
+                compilerOptions: {
+                    isCustomElement: tag => tag.startsWith('ion-')
+                }
+            }
+        }),
+        AutoImport({
+            resolvers: [ElementPlusResolver()],
+        }),
+        Components({
+            resolvers: [ElementPlusResolver()],
+        }),
+    ],
     //静态资源服务的文件夹
     publicDir: "public",
     base: '/',

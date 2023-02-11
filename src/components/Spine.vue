@@ -146,7 +146,7 @@ if (document.body.clientWidth + 17 > 1200) {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .Amiya {
   position: fixed;
   top: 100%;
@@ -157,13 +157,13 @@ if (document.body.clientWidth + 17 > 1200) {
   opacity: 0;
   transition: opacity 0.5s ease 0.5s, left 100s linear;
   z-index: 80;
-}
 
-.Amiya[debug]::before {
-  position: relative;
-  content: "";
-  left: 50%;
-  border-right: 3px red solid;
+  &[debug]::before {
+    content: "";
+    position: relative;
+    left: 50%;
+    border-right: 3px red solid;
+  }
 }
 
 .reverse {

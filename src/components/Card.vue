@@ -3,10 +3,10 @@
     <a :href="card.cover_href" target="_blank"><img class="cover" :src="card.cover_url"></a>
     <div v-if="card.cover_href" class="linear"></div>
     <div class="show">
-      <Face :face="card" style="--size: 50px; margin: 12px;" />
+      <Face :face="card" style="--size: 50px;margin: 12px;" />
       <strong>  
-        <p class="title" :style="`color: ${card.title_color};`">{{ card.title }}</p>
-        <span class="subtitle">{{ card.subtitle }}</span>
+        <p :style="`color: ${card.title_color};`">{{ card.title }}</p>
+        <span>{{ card.subtitle }}</span>
       </strong>
     </div>
   </div>
@@ -21,7 +21,7 @@ import Face from './Face.vue'
 defineProps({ card: Object as PropType<userInfo> })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .cover {
   width: 100%;
   border-radius: 5px 5px 0 0;
@@ -33,11 +33,10 @@ defineProps({ card: Object as PropType<userInfo> })
   height: 20px;
   z-index: 2;
   margin-top: -20px;
-  background-image: linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-}
 
-.fill[theme=dark] .linear {
-  background-image: none;
+  @include themeify{
+    background-image: themed('linear');
+  }
 }
 
 .show {
@@ -45,15 +44,15 @@ defineProps({ card: Object as PropType<userInfo> })
   align-items: center;
   z-index: 2;
   position: relative;
-}
 
-.title {
-  font-size: 1.5em;
-  margin: 0;
-}
+  p {
+    font-size: 1.5em;
+    margin: 0;
+  }
 
-.subtitle {
-  color: grey;
-  font-size: 14px;
+  span {
+    font-size: 14px;
+    color: grey;
+  }
 }
 </style>

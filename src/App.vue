@@ -1,42 +1,69 @@
 <template>
   <Login />
-  <Nav src="https://yun.nana7mi.link/7mi.webp" height="200px" @search="searchHandler" :theme="theme" :face="face">
-    <div v-if="face.face_href">
-      <p id="p1" :style="'color: ' + face.pendant_color">{{ name }}</p>
-      <p id="p2" style="color: grey;font-size:8px">{{ token }}</p>
-      <p>LV{{ me.level }} {{ me.xp }} / 100</p>
-      <div style="border: 1px solid rgb(230,232,234);"></div>
-      <p class="btn" :theme="theme.theme" @click="clean">
-        退出登录
-      </p>
-    </div>
-    <div v-else align="center">
-      <img src="https://i0.hdslb.com/bfs/new_dyn/0de10012b4a96d7d4bcd82728f77b2051464240042.png" style="border-radius: 10px;">
-      <span style="display: block;">不登录还想用？</span>
-    </div>
-  </Nav>
-  <div class="content" :theme="theme.theme">
-    <div class="hidden">
-      <iPhone ref="Phone" />
-      <div class="tool">
-        <div class="date shadow-container">鲨鱼好可爱（戳戳试试</div>
+  <el-scrollbar ref="scrollbar" @scroll="OnScroll" :height="theme.getHeight() + 'vh'">
+    <Nav ref="nav" src="https://yun.nana7mi.link/7mi.webp" height="200px" :isCovered="isCovered" @search="searchHandler" :theme="theme" :face="face">
+      <div v-if="face.face_href">
+        <p id="p1" :style="'color: ' + face.pendant_color">{{ name }}</p>
+        <p id="p2" style="color: grey;font-size:8px">{{ token }}</p>
+        <p>LV{{ me.level }} {{ me.xp }} / 100</p>
+        <div style="border: 1px solid rgb(230,232,234);"></div>
+        <p @click="clean">
+          退出登录
+        </p>
       </div>
-    </div>
-    <div class="post">
-      <Post :key="post.type + post.mid" :opost="post" v-for="post in FilterPosts" />
-      <p v-if="BeginTime <= 1675768827" style="text-align: center;">—— 到底了啦 ——</p>
-    </div>
-    <div class="hidden">
-      <div class="fill shadow-container" :theme="theme.theme" style="width:268px;margin-bottom: 8px;height: 167px;">
-        <Swiper speed="2000" width="268px" :pictures="pictures" />
+      <div v-else align="center">
+        <img src="https://i0.hdslb.com/bfs/new_dyn/0de10012b4a96d7d4bcd82728f77b2051464240042.png" style="border-radius: 10px;">
+        <span style="display: block;">不登录还想用？</span>
       </div>
-      <div class="sider">
-        <div class="fill shadow-container" :theme="theme.theme">
-          <Card v-for="card in cards" :card="card" />
+    </Nav>
+  
+    <div class="content">
+      <div class="hidden">
+        <iPhone ref="Phone" />
+        <div class="tool">
+          <div class="fill shadow-container">
+            <div style="width: 800px;zoom: 0.325;font-size: 3em;margin:0.25em">
+              <el-calendar v-model="calendar">
+                <template #header="{ date }">
+                  <span>{{ date }}</span>
+                </template>
+              </el-calendar>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+      <div class="post">
+        <Post :key="post.type + post.mid" :opost="post" v-for="post in FilterPosts" />
+        <p v-if="BeginTime <= 1675768827" style="text-align: center;">—— 到底了啦 ——</p>
+      </div>
+      <div class="hidden">
+        <div class="fill shadow-container" style="width:268px;margin-bottom: 8px;height: 167px;">
+          <Swiper speed="2000" width="268px" :pictures="pictures" />
+        </div>
+        <div class="sider">
+          <div class="fill shadow-container" v-for="card in cards">
+            <Card :card="card" />
+          </div>
+          <h4 style="color: gray;margin-left: 1em;margin-bottom: 0.5em;">提交贡献者名单</h4>
+          <ul style="margin: 0.5em 0;">
+            <li v-for="time, poster of posters"
+              v-show="poster > 0"
+              :status="posters[0] - time < 12 ? 'online' : posters[0] - time < 60 ? 'wait' : 'offline'">
+              <span v-if="posters[0] - time < 60">
+                {{ getNmae(poster) + (posters[0] - time)  + ' 秒前'}}
+              </span>
+              <span v-else>
+                {{ getNmae(poster) + '很久之前'}}
+              </span>
+            </li>
+          </ul>
+          <a href="https://github.com/Drelf2018/weibo-webhook/tree/main/Poster" target="_blank" style="color: gray;">
+            <p style="font-size: 14px;margin-top:0.5em;text-align: right;">如何成为提交者</p>
+          </a>
+        </div>
+      </div>
+    </div>  
+  </el-scrollbar>
   <Spine fileName="https://api.nana7mi.link/image/build_char_1023_ghost2" lambda="4773" />
 </template>
 
@@ -54,6 +81,9 @@ import Spine from './components/Spine.vue'
 import iPhone from './components/iPhone.vue'
 import Swiper from './components/Swiper.vue'
 
+// 日历
+const calendar = ref(new Date())
+
 // 自动播放好运来的组件
 const Phone = ref(null)
 
@@ -65,6 +95,8 @@ const token = ref(localStorage.getItem("token"))
 const me = ref()
 const name = ref("")
 const users = ref([])
+// 提交者
+const posters = ref({})
 
 // 博文数据
 const PastPosts = ref([])
@@ -84,6 +116,9 @@ const face: Ref<faceInfo> = ref({
 const cards = ref([])
 const pictures = ref([])
 
+const ApiUrl = ref("https://api.nana7mi.link")
+// const ApiUrl = ref("http://localhost:5664")
+
 // 登录
 login(uid.value, token.value).then(getFace).catch(console.log)
 
@@ -102,7 +137,7 @@ const BeginTime = ref(new Date().getTime() / 1000)
 async function GetPastPost() {
   if (BeginTime.value <= 1675768827) return
   BeginTime.value -= 86400
-  let res = await axios.get("https://api.nana7mi.link/post", { params: { beginTs: BeginTime.value, endTs: BeginTime.value + 86400 } })
+  let res = await axios.get(ApiUrl.value + "/post", { params: { beginTs: BeginTime.value, endTs: BeginTime.value + 86400 } })
   if (res.data.code == 0) {
     PastPosts.value = PastPosts.value.concat(res.data.data.reverse())
     searchHandler("")
@@ -120,9 +155,13 @@ let PastPlan = setInterval(() => {
 }, 300)
 
 // 每五秒获取新博文
-setInterval(async () => {
-  let res = await axios.get("https://api.nana7mi.link/post")
+NewPost()
+setInterval(NewPost, 4500)
+setInterval(() => posters.value[0] += 1, 1000)
+async function NewPost() {
+  let res = await axios.get(ApiUrl.value + "/post")
   if (res.data.code == 0) {
+    posters.value = res.data.updater
     res.data.data.forEach(async post => {
       if (FuturePosts.value.length == 0) FuturePosts.value = [post]
       else if (FuturePosts.value[0].time != post.time) FuturePosts.value.unshift(post)
@@ -132,22 +171,36 @@ setInterval(async () => {
       searchHandler("")
     })
   }
-}, 5000)
+}
 
 // 滚动到底获取更久之前博文
-window.addEventListener('scroll', () => {
-  let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-  let clientHeight = document.documentElement.clientHeight;
-  let scrollHeight = document.documentElement.scrollHeight;
-  if (scrollTop + clientHeight >= scrollHeight) GetPastPost()
-})
+// window.addEventListener('scroll', () => {
+//   let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+//   let clientHeight = document.documentElement.clientHeight;
+//   let scrollHeight = document.documentElement.scrollHeight;
+//   if (scrollTop + clientHeight >= scrollHeight) GetPastPost()
+// })
+
+const isCovered = ref(false)
+const scrollbar = ref(null)
+const nav = ref(null)
+function OnScroll(evt) {
+
+  // console.log(scrollbar.value);
+  // let scrollTop = nav.value.scrollTop || nav.value.scrollTop;
+  // let clientHeight = nav.value.clientHeight;
+  // let scrollHeight = nav.value.scrollHeight;
+  // console.log(nav.value, scrollTop, clientHeight, scrollHeight, evt.scrollTop);
+  
+  isCovered.value = 136 <= evt.scrollTop
+}
 
 // 卡片
 axios.get(`https://aliyun.nana7mi.link/live.LiveRoom(21452505).get_room_info()`).then(res => {
   let data = res.data.data
   let info: userInfo = {
     cover_href: `https://live.bilibili.com/${data.room_info.room_id}`,
-    cover_url: data.room_info.cover,
+    cover_url: data.room_info.cover.replace("http://", "https://"),
     face_href: `https://space.bilibili.com/${data.room_info.uid}`,
     face_url: data.anchor_info.base_info.face,
     pendant: "",
@@ -159,9 +212,22 @@ axios.get(`https://aliyun.nana7mi.link/live.LiveRoom(21452505).get_room_info()`)
   cards.value.push(info)
 })
 
+// 获取b站名字
+const uid2name = {}
+function getNmae(uid: number) {
+  if (uid == 0) return ""
+  if (!uid2name[uid]) {
+    uid2name[uid] = uid
+    axios.get(`https://aliyun.nana7mi.link/user.User(${uid}).get_user_info().name?max_age=86400`).then(
+      res => uid2name[uid] = res.data.data + " "
+    ).catch(console.log)
+  }
+  return uid2name[uid]
+}
+
 // 登录
 async function login(uid: string, token: string) {
-  let res = await axios.get("https://api.nana7mi.link/login", { params: { uid: uid, token: token } })
+  let res = await axios.get(ApiUrl.value + "/login", { params: { uid: uid, token: token } })
   if (res.data.code != 0) throw res.data.data
   res.data.data.filter(u => u.uid == uid).forEach(u => me.value = u)
   users.value = res.data.data
@@ -221,7 +287,7 @@ function TaskWaitAll(args: Array<String>) {
 }
 </script>
 
-<style>
+<style lang="scss">
 #p2 {
   display: none;
 }
@@ -230,19 +296,18 @@ function TaskWaitAll(args: Array<String>) {
   display: block;
 }
 
-.btn {
-  transition: all 0.2s;
-  width: 100%;
+ul {
+  color: grey;
+  font-size: 14px;
+  font-family:sans-serif;
 }
 
-.btn[theme=light]:hover {
-  background-color: rgb(222,222,222);
-  /* box-shadow: 0 1px hsl(210deg 8% 80%) */
+li[status=online]::marker {
+  color: green;
 }
 
-.btn[theme=dark] {
-  background-color: rgb(34,34,37);
-  /* box-shadow: 0 1px rgb(33, 38, 45); */
+li[status=wait]::marker {
+  color: orange;
 }
 
 .shadow-container {
@@ -252,23 +317,18 @@ function TaskWaitAll(args: Array<String>) {
   margin: 8px 4px;
   border-radius: 5px;
   transition: all 0.2s;
+
+  @include themeify{
+    color: themed('shadow-container-color');
+    background-color: themed('shadow-container-back');
+    box-shadow: themed('shadow-container-box');
+  }
 }
 
-div[theme=light] .shadow-container {
-  background-color: rgb(255,255,255);
+#app[data-theme=light] .shadow-container {
   box-shadow: 0 3px 1px -2px rgb(0 0 0 / 12%),
               0 2px 2px 0 rgb(0 0 0 / 14%),
               0 1px 5px 0 rgb(0 0 0 / 20%);
-}
-
-div[theme=dark] .shadow-container {
-  color: rgb(201, 209, 217);
-  background-color: rgb(43, 43, 43);
-  box-shadow: 0 0 0 1px rgb(48, 54, 61);
-}
-
-.content[theme=dark] .iPhone {
-  opacity: 0.5;
 }
 
 .post {
@@ -286,10 +346,10 @@ div[theme=dark] .shadow-container {
 .fill {
   padding: 0;
   transition: all 0.2s;
-}
 
-.fill[theme=dark] {
-  opacity: 0.5;
+  @include themeify{
+    opacity: themed('fill');
+  }
 }
 
 .content {
