@@ -42,8 +42,8 @@ export class Theme {
         this.setZoom()
         window.onresize = this.setZoom
     }
-    getHeight() {
-        return 100 / Math.max(1, this.zoom)
+    getHeight(height=100) {
+        return height / Math.max(1, this.zoom)
     }
     setZoom () {
         this.zoom = 0.8 * document.body.clientWidth / 1152

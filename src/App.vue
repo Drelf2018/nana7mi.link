@@ -1,7 +1,7 @@
 <template>
   <Login />
-  <el-scrollbar ref="scrollbar" @scroll="OnScroll" :height="theme.getHeight() + 'vh'">
-    <Nav ref="nav" src="https://yun.nana7mi.link/7mi.webp" height="200px" :isCovered="isCovered" @search="searchHandler" :theme="theme" :face="face">
+  <el-scrollbar ref="scrollbar" @scroll="(evt) => OnScroll(evt)" :height="theme.getHeight() + 'vh'">
+    <Nav src="https://yun.nana7mi.link/7mi.webp" height="200px" :isCovered="isCovered" @search="searchHandler" :theme="theme" :face="face">
       <div v-if="face.face_href">
         <p id="p1" :style="'color: ' + face.pendant_color">{{ name }}</p>
         <p id="p2" style="color: grey;font-size:8px">{{ token }}</p>
@@ -71,7 +71,7 @@
 import axios from 'axios'
 
 import { Theme, Picture, userInfo, faceInfo } from './components/tool'
-import { ref, Ref } from 'vue'
+import { ref, Ref, onMounted } from 'vue'
 
 import Nav from './components/Nav.vue'
 import Card from './components/Card.vue'
@@ -154,10 +154,12 @@ let PastPlan = setInterval(() => {
   }
 }, 300)
 
+// 更新贡献者提交时间
+setInterval(() => posters.value[0] += 1, 1000)
+
 // 每五秒获取新博文
 NewPost()
 setInterval(NewPost, 4500)
-setInterval(() => posters.value[0] += 1, 1000)
 async function NewPost() {
   let res = await axios.get(ApiUrl.value + "/post")
   if (res.data.code == 0) {
@@ -173,27 +175,17 @@ async function NewPost() {
   }
 }
 
-// 滚动到底获取更久之前博文
-// window.addEventListener('scroll', () => {
-//   let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-//   let clientHeight = document.documentElement.clientHeight;
-//   let scrollHeight = document.documentElement.scrollHeight;
-//   if (scrollTop + clientHeight >= scrollHeight) GetPastPost()
-// })
-
+// 滚盘判断头部是否隐藏以及是否更新早期博文
 const isCovered = ref(false)
 const scrollbar = ref(null)
-const nav = ref(null)
-function OnScroll(evt) {
-
-  // console.log(scrollbar.value);
-  // let scrollTop = nav.value.scrollTop || nav.value.scrollTop;
-  // let clientHeight = nav.value.clientHeight;
-  // let scrollHeight = nav.value.scrollHeight;
-  // console.log(nav.value, scrollTop, clientHeight, scrollHeight, evt.scrollTop);
-  
-  isCovered.value = 136 <= evt.scrollTop
-}
+let OnScroll = null
+onMounted(() => {
+  let container = scrollbar.value.wrapRef
+  OnScroll = function(evt) {
+    if(evt.scrollTop >= container.firstChild.offsetHeight - container.offsetHeight) GetPastPost()
+    isCovered.value = 136 <= evt.scrollTop
+  }
+})
 
 // 卡片
 axios.get(`https://aliyun.nana7mi.link/live.LiveRoom(21452505).get_room_info()`).then(res => {
@@ -247,6 +239,7 @@ async function getFace() {
   face.value = info
 }
 
+// 退出登录
 function clean() {
   localStorage.setItem("token", "")
   location.reload()
