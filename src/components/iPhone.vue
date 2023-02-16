@@ -43,6 +43,7 @@ defineExpose({ play })
     width: 276px;
     height: 554px;
     z-index: 2;
+    margin: auto;
     position: relative;
 
     @include themeify{
@@ -50,9 +51,9 @@ defineExpose({ play })
     }
 
     div {
-        margin: 23% 6% 0;
+        margin: 22.5% 6% 0;
         width: 88%;
-        height: 77%;
+        height: 77.5%;
         background-color: black;
 
         video {

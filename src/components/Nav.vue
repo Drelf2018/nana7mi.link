@@ -23,7 +23,7 @@ import Face from './Face.vue'
 
 const emit = defineEmits(['search'])
 
-const props = defineProps({
+defineProps({
   src: String,
   height: String,
   isCovered: Boolean,
@@ -32,13 +32,6 @@ const props = defineProps({
 })
 
 const search = ref("")
-// const compareHeight = Math.max(1, props.theme.zoom) * (parseInt(props.height) - 64)
-// const isCovered = ref(compareHeight <= 0)
-
-// if (!isCovered.value) window.onscroll = () => {
-//   let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-//   isCovered.value = compareHeight <= scrollTop
-// }
 
 function info(evt) {
   switch(evt.type) {
@@ -161,7 +154,7 @@ onMounted(() => {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
   z-index: 100;
 }
 
@@ -208,7 +201,7 @@ input {
   }
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1000px) {
   .nav-picture {
     background-position: 53%;
   }

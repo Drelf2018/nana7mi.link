@@ -25,8 +25,8 @@ export class Theme {
     zoom: number
     constructor() {
         this.app = document.getElementById("app")
-
         if(document.body.offsetWidth < 750) {
+            this.app.classList.add("mobile")
             let timeNow = new Date().getHours()
             if(timeNow >= 21 || timeNow < 6){
                 this.theme = "dark"
@@ -34,19 +34,17 @@ export class Theme {
                 this.theme = "light"
             }
         } else {
+            this.app.classList.add("pc")
             this.theme = localStorage.getItem("theme") || "light"
         }
         
         this.setBackgroundColor()
 
         this.setZoom()
-        window.onresize = this.setZoom
-    }
-    getHeight(height=100) {
-        return height / Math.max(1, this.zoom)
+        window.onresize = () => this.setZoom()
     }
     setZoom () {
-        this.zoom = 0.8 * document.body.clientWidth / 1152
+        this.zoom = 0.8 * document.body.clientWidth / 1200
         this.app.style.setProperty("--zoom", this.zoom.toString())
     }
     setBackgroundColor() {

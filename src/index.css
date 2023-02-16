@@ -17,3 +17,15 @@ body {
     color: #2c3e50;
     transition: background-color 0.2s;
 }
+
+.pc {
+    zoom: var(--zoom);
+}
+
+.mobile .hidden {
+    display: none;
+}
+
+.mobile .post {
+    width: 92%;
+}

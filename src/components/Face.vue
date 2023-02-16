@@ -2,7 +2,7 @@
   <a v-if="face.face_href" :href="face.face_href" target="_blank">
     <div class="face">
       <img id="pendant" :src="face.pendant">
-      <img id="profile" :src="face.face_url" :url="face.pendant != ''" :style="`outline-color: ${face.pendant_color}`">
+      <img id="profile" :src="face.face_url" :url="face.pendant != ''" :style="`border-color: ${face.pendant_color}`">
     </div>
   </a>
   <a v-else href="javascript:;" class="login" @click="login"><div>登录</div></a>
@@ -43,12 +43,12 @@ function login() {
     transform: translate(-50%, -50%);
     z-index: -1;
     border-radius: 50%;
-    outline-color: rgb(0, 161, 214);
+    border-color: rgb(0, 161, 214);
   }
   
   #profile[url=false]  {
-    outline-style: solid;
-    outline-width: calc(0.05 * var(--size));
+    border-style: solid;
+    border-width: calc(0.05 * var(--size));
   }
 }
 

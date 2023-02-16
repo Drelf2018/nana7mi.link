@@ -174,10 +174,4 @@ canvas {
   zoom: 0.3;
   transition: transform 0.5s;
 }
-
-@media screen and (max-width: 1200px) {
-  canvas {
-    opacity: 0;
-  }
-}
 </style>

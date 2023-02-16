@@ -159,8 +159,7 @@ function moveNow(fro: number) {
 
 img {
     position: relative;
-    top: -50%;
-    transform: translateY(-50%);
+    top: -100%;
     width: 100%;
     vertical-align: middle;
 }
