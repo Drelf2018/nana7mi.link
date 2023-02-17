@@ -161,7 +161,7 @@ setInterval(NewPost, 4500)
 async function NewPost() {
   let res = await axios.get(ApiUrl.value + "/post")
   if (res.data.code == 0) {
-    posters.value = res.data.updater
+    posters.value = res.data.poster
     res.data.data.forEach(async post => {
       if (FuturePosts.value.length == 0) FuturePosts.value = [post]
       else if (FuturePosts.value[0].time != post.time) FuturePosts.value.unshift(post)
