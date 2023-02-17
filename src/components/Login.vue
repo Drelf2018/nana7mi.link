@@ -30,6 +30,7 @@
 <script setup lang="ts">
 import axios from 'axios'
 import { ref } from 'vue'
+import { ApiUrl } from './tool'
 
 const uid = ref("")
 const token = ref("验证码")
@@ -47,7 +48,7 @@ function close() {
 function getToken() {
   let bid = parseInt(uid.value)
   if (isNaN(bid)) return
-  axios.get("https://api.nana7mi.link/token?uid="+uid.value).then(
+  axios.get(ApiUrl + "/token?uid="+uid.value).then(
     res => {
       secret = res.data.data[0]
       token.value = res.data.data[1]
@@ -68,7 +69,7 @@ function getToken() {
 
 function login() {
   if (!canLogin.value) return
-  axios.get("https://api.nana7mi.link/register?uid="+uid.value+"&token="+secret).then(
+  axios.get(ApiUrl + "/register?uid="+uid.value+"&token="+secret).then(
     res => {
       if (res.data.code == 0) {
         localStorage.setItem("uid", uid.value)

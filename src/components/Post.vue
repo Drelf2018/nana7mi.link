@@ -18,6 +18,7 @@
 </template>
 
 <script setup lang="ts">
+import { ApiUrl } from './tool';
 import { defineProps, ref } from 'vue';
 import Card from './Card.vue'
 
@@ -51,7 +52,7 @@ function handler(post) {
 function replaceUrl(url: string) {
   let name = url.split("/").pop()
   if (name != "") {
-    return "https://api.nana7mi.link/image/" + name
+    return ApiUrl + "/image/" + name
   }
   return ""
 }

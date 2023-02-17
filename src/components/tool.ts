@@ -1,3 +1,6 @@
+let api = window.location.search.replace("?source=", "")
+export const ApiUrl = api == "" ? "https://api.nana7mi.link" : api
+
 export function throttle (fn: Function, delay=500) {
     var flag = new Date().getTime();
     return function(...args) {

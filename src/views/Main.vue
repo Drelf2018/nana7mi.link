@@ -66,7 +66,7 @@
 <script setup lang="ts">
 import axios from 'axios'
 
-import { Theme, Picture, userInfo, faceInfo } from '../components/tool'
+import { ApiUrl, Theme, Picture, userInfo, faceInfo } from '../components/tool'
 import { ref, Ref, defineExpose, defineProps, PropType } from 'vue'
 
 import Nav from '../components/Nav.vue'
@@ -113,9 +113,6 @@ const face: Ref<faceInfo> = ref({
 const cards = ref([])
 const pictures = ref([])
 
-const ApiUrl = ref("https://api.nana7mi.link")
-// const ApiUrl = ref("http://localhost:5664")
-
 // 登录
 login(uid.value, token.value).then(getFace).catch(console.log)
 
@@ -132,12 +129,16 @@ TaskWaitAll([
 // 获取博文函数
 const BeginTime = ref(Math.ceil(new Date().getTime() / 1000))
 async function GetPastPost() {
-  if (BeginTime.value <= 1675768827) return
-  BeginTime.value -= 86400
-  let res = await axios.get(ApiUrl.value + "/post", { params: { beginTs: BeginTime.value, endTs: BeginTime.value + 86400 } })
+  if (BeginTime.value <= 1666969128) return
+  BeginTime.value -= 7 * 86400
+  let res = await axios.get(ApiUrl + "/post", { params: { beginTs: BeginTime.value, endTs: BeginTime.value + 7 * 86400 } })
   if (res.data.code == 0) {
-    PastPosts.value = PastPosts.value.concat(res.data.data.reverse())
-    searchHandler("")
+    if (res.data.data.length != 0) {
+      PastPosts.value = PastPosts.value.concat(res.data.data.reverse())
+      searchHandler("")
+    } else {
+      GetPastPost()
+    }
   }
 }
 defineExpose({ GetPastPost })
@@ -159,7 +160,7 @@ setInterval(() => posters.value[0] += 1, 1000)
 NewPost()
 setInterval(NewPost, 4500)
 async function NewPost() {
-  let res = await axios.get(ApiUrl.value + "/post")
+  let res = await axios.get(ApiUrl + "/post")
   if (res.data.code == 0) {
     posters.value = res.data.poster
     res.data.data.forEach(async post => {
@@ -205,7 +206,7 @@ function getNmae(uid: number) {
 
 // 登录
 async function login(uid: string, token: string) {
-  let res = await axios.get(ApiUrl.value + "/login", { params: { uid: uid, token: token } })
+  let res = await axios.get(ApiUrl + "/login", { params: { uid: uid, token: token } })
   if (res.data.code != 0) throw res.data.data
   res.data.data.filter(u => u.uid == uid).forEach(u => me.value = u)
   users.value = res.data.data
@@ -236,7 +237,7 @@ function searchHandler(search: string) {
   let TotalPosts = FuturePosts.value.concat(PastPosts.value).filter(
     post => {
       let watch = post.type+post.uid
-      if (watch == "weibo7198559139") return true
+      if (watch == "weibo7198559139" || uid.value == "188888131") return true
       else if (me.value && me.value.watch.length > 0 && watch in me.value.watch) return true
       return false
     }
@@ -301,6 +302,10 @@ li[status=wait]::marker {
     color: themed('shadow-container-color');
     background-color: themed('shadow-container-back');
     box-shadow: themed('shadow-container-box');
+  }
+
+  a {
+    color: #eb7350;
   }
 }
 
