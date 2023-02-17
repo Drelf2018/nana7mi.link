@@ -130,7 +130,7 @@ TaskWaitAll([
 })
 
 // 获取博文函数
-const BeginTime = ref(new Date().getTime() / 1000)
+const BeginTime = ref(Math.ceil(new Date().getTime() / 1000))
 async function GetPastPost() {
   if (BeginTime.value <= 1675768827) return
   BeginTime.value -= 86400
