@@ -1,5 +1,5 @@
 <template>
-  <div ref="hidden" id="hidden-login-form" style="display: none;">
+  <div ref="hidden" id="hidden-login-form" style="display: none;opacity: 0">
     <div id="popLayer"></div>
     <div class="container">
       <ion-icon name="close" class="close" @click="close"></ion-icon>
@@ -42,6 +42,7 @@ let secret = ""
 let plan = null
 
 function close() {
+  hidden.value.style.opacity = "0"
   hidden.value.style.display = "none"
 }
 
@@ -82,15 +83,21 @@ function login() {
 </script>
 
 <style lang="scss" scoped>
+#hidden-login-form {
+  transition: all 0.2s;
+  z-index: 200;
+  position: fixed;
+}
+
 #popLayer {
   position: fixed;
   width: 100%;
   height: 100%;
   left: 0;
   top: 0;
-  z-index: 110;
   background-color: rgba(0,0,0,0.5);
 }
+
 .container {
   position: fixed;
   width: 800px;
@@ -101,7 +108,6 @@ function login() {
   align-items: flex-start;
   padding: 2em;
   background: url("https://yun.nana7mi.link/afternoon.webp") 0px center / cover no-repeat fixed;
-  z-index: 120;
   border-radius: 10px;
   box-shadow: 0 3px 1px -2px rgb(0 0 0 / 32%),
               0 2px 2px 0 rgb(0 0 0 / 34%),
@@ -191,7 +197,7 @@ function login() {
 .split {
   width: 98%;
   margin: 0.5em auto;
-  border-bottom: solid 2px rgba(128,128,128,0.75);
+  border-bottom: solid 1px rgba(128,128,128,0.75);
 }
 
 .token {

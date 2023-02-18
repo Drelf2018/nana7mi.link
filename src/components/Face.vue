@@ -15,7 +15,9 @@ import { faceInfo } from './tool'
 defineProps({ face: Object as PropType<faceInfo> })
 
 function login() {
-  document.getElementById("hidden-login-form").style.display = "block"
+  let form = document.getElementById("hidden-login-form")
+  form.style.display = "block"
+  setTimeout(() => form.style.opacity = "1", 1)
 }
 </script>
 
