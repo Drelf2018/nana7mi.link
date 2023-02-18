@@ -137,7 +137,7 @@ async function GetPastPost() {
       PastPosts.value = PastPosts.value.concat(res.data.data.reverse())
       searchHandler("")
     } else {
-      GetPastPost()
+      await GetPastPost()
     }
   }
 }
@@ -237,8 +237,8 @@ function searchHandler(search: string) {
   let TotalPosts = FuturePosts.value.concat(PastPosts.value).filter(
     post => {
       let watch = post.type+post.uid
-      if (watch == "weibo7198559139" || uid.value == "188888131") return true
-      else if (me.value && me.value.watch.length > 0 && watch in me.value.watch) return true
+      if (watch == "weibo7198559139") return true
+      else if ((me.value && me.value.watch.length > 0) && ("*" in me.value.watch || watch in me.value.watch)) return true
       return false
     }
   )
