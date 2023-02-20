@@ -1,58 +1,54 @@
 <template>
-    <div class="shadow-container">
-        <a :href="post.url" style="color: inherit" target="_blank"><ion-icon name="arrow-redo-outline" class="goto"></ion-icon></a>
-        <Card :card="post.card" style="margin: -9px"></Card>
-        <p v-html="post.text"></p>
-
-        <div v-if="post.repost" class="shadow-container">
-            <a :href="post.repost.url" style="color: inherit" target="_blank"><ion-icon name="arrow-redo-outline" class="goto"></ion-icon></a>
-            <Card :card="post.repost.card" style="margin: -9px"></Card>
-            <p v-html="post.repost.text"></p>
-            <img :src="src" v-for="src in post.repost.picUrls" style="width: 100%">
-            <p style="color: grey;text-align: right;margin-bottom: 0;font-size: 12px;">{{ Format(new Date(post.repost.time * 1000), "yy-MM-dd hh:mm:ss") }} {{ post.repost.source }}</p>
-        </div>
-
-        <img :src="src" v-for="src in post.picUrls" style="width: 100%">
-        <p style="color: grey;text-align: right;margin-bottom: 0;font-size: 12px;">{{ Format(new Date(post.time * 1000), "yy-MM-dd hh:mm:ss") }} {{ post.source }}</p>
-    </div>
+  <div class="shadow-container">
+    <a :href="post.url" style="color: inherit" target="_blank"><ion-icon name="arrow-redo-outline" class="goto"></ion-icon></a>
+    <Card :card="post.card" style="margin: -9px"></Card>
+    <p v-html="post.text"></p>
+    <img :src="src" v-for="src in post.picUrls" style="width: 100%">
+    <Post v-if="post.repost" :key="post.repost.key" :opost="post.repost" />
+    <p style="color: grey;text-align: right;margin-bottom: 0;font-size: 12px;">{{ post.date }} {{ post.source }}</p>
+    <Comments :comments="comments" v-for="comments in post.attachment"></Comments>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ApiUrl } from './tool';
 import { defineProps, ref } from 'vue';
 import Card from './Card.vue'
+import Comments from './Comments.vue'
 
 const props = defineProps({ opost: Object })
 const post = ref(handler(props.opost))
 
 function handler(post) {
-    post.face = replaceUrl(post.face)
-    post.pendant = replaceUrl(post.pendant)
-    post.picUrls = replaceUrls(post.picUrls)
-    switch (post.type) {
-        case "weibo":
-            post.card = {
-                cover_href: null,
-                cover_url: null,
-                face_href: `https://weibo.com/u/${post.uid}`,
-                face_url: post.face,
-                pendant: post.pendant,
-                pendant_color: "rgb(251, 114, 153)",
-                title: post.name,
-                title_color: "rgb(251, 114, 153)",
-                subtitle: post.description
-            }
-            post.url = `https://weibo.com/${post.uid}/${post.mid}`
-            break
-    }
-    if (post.repost) post.repost = handler(post.repost)
-    return post
+  post.face = replaceUrl(post.face)
+  post.pendant = replaceUrl(post.pendant)
+  post.picUrls = replaceUrls(post.picUrls)
+  post.date = Format(new Date(post.time * 1000), "yy-MM-dd hh:mm:ss")
+  switch (post.type) {
+    case "weibo":
+    case "weiboComment":
+      post.card = {
+        cover_href: null,
+        cover_url: null,
+        face_href: `https://weibo.com/u/${post.uid}`,
+        face_url: post.face,
+        pendant: post.pendant,
+        pendant_color: post.type == "weibo" ? "#eb7350" : "transparent",
+        title: post.name,
+        title_color: "#eb7350",  //"rgb(251, 114, 153)"
+        subtitle: post.description
+      }
+      post.url = `https://weibo.com/${post.uid}/${post.mid}`
+      break
+  }
+  if(post.repost) post.repost = handler(post.repost)
+  if(post.type=="weibo" && post.attachment) post.attachment = post.attachment.map(handler)
+  return post
 }
 
 function replaceUrl(url: string) {
-  let name = url.split("/").pop()
-  if (name != "") {
-    return ApiUrl + "/image/" + name
+  if (url != "") {
+    return ApiUrl + "/url/" + url
   }
   return ""
 }

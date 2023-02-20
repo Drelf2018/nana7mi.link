@@ -23,14 +23,17 @@ function login() {
 
 <style lang="scss" scoped>
 .face {
-  width: var(--size);
-  height: var(--size);
+  // width: var(--size);
+  // height: var(--size);
+  width: 1em;
+  height: 1em;
   position: relative;
   background-size: contain;
 
   #pendant {
-    --alpha: 1.6;
-    height: calc(var(--size) * var(--alpha));
+    // --alpha: 1.6;
+    // height: calc(var(--size) * var(--alpha));
+    height: 1.6em;
     position: relative;
     top: 50%;
     left: 50%;
@@ -39,7 +42,8 @@ function login() {
 
   #profile {
     position: absolute;
-    height: var(--size);
+    // height: var(--size);
+    height: 1em;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -50,12 +54,13 @@ function login() {
   
   #profile[url=false]  {
     border-style: solid;
-    border-width: calc(0.05 * var(--size));
+    // border-width: calc(0.05 * var(--size));
+    border-width: 0.05em;
   }
 }
 
 .login {
-  font-size: 14px;
+  font-size: 14px !important;
   color: white;
   text-decoration: none;
   border-radius: 50%;

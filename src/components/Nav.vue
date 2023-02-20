@@ -7,7 +7,7 @@
         <ion-icon v-else name="moon"></ion-icon>
       </div>
       <input v-model="search" type="text" placeholder="支持模糊搜索动态" @input="e => emit('search', search)">
-      <Face id="face" :login="face.face_href != ''" :face="face" style="--size: 34px" />
+      <Face id="face" :login="face.face_href != ''" :face="face" style="font-size: 34px" />
       <div id="info" class="shadow-container" @mouseenter="info" @mouseleave="info">
         <slot></slot>
       </div>

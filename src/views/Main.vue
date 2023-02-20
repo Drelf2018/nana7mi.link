@@ -1,7 +1,7 @@
 <template>
   <Nav src="https://yun.nana7mi.link/7mi.webp" height="200px" :isCovered="isCovered" @search="searchHandler" :theme="theme" :face="face">
     <div v-if="face.face_href">
-      <p id="p1" :style="'color: ' + face.pendant_color">{{ name }}</p>
+      <p id="p1" :style="{color: face.pendant_color}">{{ name }}</p>
       <p id="p2" style="color: grey;font-size:8px">{{ token }}</p>
       <p>LV{{ me.level }} {{ me.xp }} / 100</p>
       <div style="border: 1px solid rgb(230,232,234);"></div>
@@ -31,8 +31,12 @@
       </div>
     </div>
     <div class="post">
-      <Post :key="post.type + post.mid" :opost="post" v-for="post in FilterPosts" />
-      <p v-if="BeginTime <= 1675768827" style="text-align: center;">—— 到底了啦 ——</p>
+      <Post :key="post.key" :opost="post" v-for="post in FilterPosts" />
+      <p v-if="BeginTime <= 1675768827" style="text-align: center;color: grey">
+        <span style="font-size: 0.1em;">◥</span> 
+        到底了啦
+        <span style="font-size: 0.1em;">◤</span>
+      </p>
     </div>
     <div class="hidden">
       <div class="fill shadow-container" style="margin-bottom: 8px;">
@@ -46,7 +50,7 @@
         <ul style="margin: 0.5em 0;">
           <li v-for="time, poster of posters"
             v-show="poster > 0"
-            :status="posters[0] - time < 12 ? 'online' : posters[0] - time < 60 ? 'wait' : 'offline'">
+            :class="posters[0] - time < 12 ? 'online' : posters[0] - time < 60 ? 'wait' : 'offline'">
             <span v-if="posters[0] - time < 60">
               {{ getNmae(poster) + (posters[0] - time)  + ' 秒前'}}
             </span>
@@ -128,13 +132,27 @@ TaskWaitAll([
 
 // 获取博文函数
 const BeginTime = ref(Math.ceil(new Date().getTime() / 1000))
+// 获取一定数量的初始博文
+GetPastPost()
 async function GetPastPost() {
   if (BeginTime.value <= 1666969128) return
   BeginTime.value -= 7 * 86400
   let res = await axios.get(ApiUrl + "/post", { params: { beginTs: BeginTime.value, endTs: BeginTime.value + 7 * 86400 } })
   if (res.data.code == 0) {
     if (res.data.data.length != 0) {
-      PastPosts.value = PastPosts.value.concat(res.data.data.reverse())
+      let tp = res.data.data.reverse()
+      let key2index = {}
+      for(let i=0;i<tp.length;i++) {
+        tp[i].key = tp[i].type + tp[i].mid
+        key2index[tp[i].key] = i
+      }
+      for(let i=0;i<tp.length;i++) {
+        if(tp[i].type == "weiboComment") {
+          let j = key2index[tp[i].attachment[0]]
+          if(j && tp[i].uid == tp[j].uid) tp[j].attachment.push(tp[i])
+        }
+      }
+      PastPosts.value = PastPosts.value.concat(tp)
       searchHandler("")
     } else {
       await GetPastPost()
@@ -142,16 +160,6 @@ async function GetPastPost() {
   }
 }
 defineExpose({ GetPastPost })
-
-// 获取一定数量的初始博文
-GetPastPost()
-let PastPlan = setInterval(() => {
-  if (PastPosts.value.length < 10) {
-    GetPastPost()
-  } else {
-    clearInterval(PastPlan)
-  }
-}, 300)
 
 // 更新贡献者提交时间
 setInterval(() => posters.value[0] += 1, 1000)
@@ -164,6 +172,7 @@ async function NewPost() {
   if (res.data.code == 0) {
     posters.value = res.data.poster
     res.data.data.forEach(async post => {
+      post.key = post.type + post.mid
       if (FuturePosts.value.length == 0) FuturePosts.value = [post]
       else if (FuturePosts.value[0].time != post.time) FuturePosts.value.unshift(post)
       else return
@@ -282,11 +291,11 @@ ul {
   font-family:sans-serif;
 }
 
-li[status=online]::marker {
+li.online::marker {
   color: green;
 }
 
-li[status=wait]::marker {
+li.wait::marker {
   color: orange;
 }
 

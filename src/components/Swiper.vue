@@ -9,10 +9,10 @@
             </div>
         </div>
         <div class="dotList">
-            <div class="dot" v-for="i in pictures.length - 1" :style="selected == i ? 'opacity: 1;' : 'opacity: 0.5;'" @click="tp(i)"></div>
+            <div class="dot" v-for="i in pictures.length - 1" :style="{opacity: selected == i ? '1' : '0.5'}" @click="() => tp(i)"></div>
         </div>
-        <ion-icon name="chevron-back-circle" class="swiper-btn" style="left: 0px" @click="move(-1)"></ion-icon>
-        <ion-icon name="chevron-forward-circle" class="swiper-btn" style="right: 0px" @click="move(1)"></ion-icon>
+        <ion-icon name="chevron-back-circle" class="swiper-btn" style="left: 0px" @click="() => move(-1)"></ion-icon>
+        <ion-icon name="chevron-forward-circle" class="swiper-btn" style="right: 0px" @click="() => move(1)"></ion-icon>
     </div>
 </template>
 
@@ -153,8 +153,8 @@ function moveNow(fro: number) {
     position: relative;
     background-size: cover;
     background-position: center;
-    filter: blur(5px);
-    opacity: 0.5;
+    /* filter: blur(5px); */
+    /* opacity: 0.5; */
 }
 
 img {

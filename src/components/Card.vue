@@ -1,12 +1,15 @@
 <template>
-  <div>
+  <div style="font-size: 50px;">
     <a :href="card.cover_href" target="_blank"><img class="cover" :src="card.cover_url"></a>
     <div v-if="card.cover_href" class="linear"></div>
     <div class="show">
-      <Face :face="card" style="--size: 50px;margin: 12px;" />
+      <Face :face="card" style="margin: 0.24em;" />
       <strong>  
-        <p :style="`color: ${card.title_color};`">{{ card.title }}</p>
-        <span>{{ card.subtitle }}</span>
+        <div>
+          <span :style="{color: card.title_color}">{{ card.title }}</span>
+          <slot></slot>
+        </div>
+        <p>{{ card.subtitle }}</p>
       </strong>
     </div>
   </div>
@@ -45,13 +48,13 @@ defineProps({ card: Object as PropType<userInfo> })
   z-index: 2;
   position: relative;
 
-  p {
-    font-size: 1.5em;
-    margin: 0;
+  div {
+    font-size: 0.48em;
   }
 
-  span {
-    font-size: 14px;
+  p {
+    font-size: 0.28em;
+    margin: 0;
     color: grey;
   }
 }
