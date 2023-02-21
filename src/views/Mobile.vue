@@ -1,5 +1,4 @@
 <template>
-  <!-- Mobile -->
   <Main ref="main" :isCovered="isCovered" :theme="theme"></Main>
 </template>
   
@@ -26,3 +25,9 @@ window.onscroll = () => {
   if (scrollTop + clientHeight >= scrollHeight - 64) main.value.GetPastPost()
 }
 </script>
+
+<style>
+.mobile .post {
+  width: 92%;
+}
+</style>

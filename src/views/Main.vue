@@ -16,20 +16,7 @@
   </Nav>
 
   <div class="content">
-    <div class="hidden">
-      <iPhone ref="Phone" />
-      <div class="tool">
-        <div class="fill shadow-container">
-          <div style="width: 1000px;zoom: 0.284;font-size: 3em;margin:0.25em">
-            <el-calendar v-model="calendar">
-              <template #header="{ date }">
-                <span>{{ date }}</span>
-              </template>
-            </el-calendar>
-          </div>
-        </div>
-      </div>
-    </div>
+    <slot name="left"></slot>
     <div class="post">
       <Post :key="post.key" :opost="post" v-for="post in FilterPosts" />
       <p v-if="BeginTime <= 1675768827" style="text-align: center;color: grey">
@@ -38,54 +25,23 @@
         <span style="font-size: 0.1em;">◤</span>
       </p>
     </div>
-    <div class="hidden">
-      <div class="fill shadow-container" style="margin-bottom: 8px;">
-        <Swiper speed="2000" width="292px" :pictures="pictures" />
-      </div>
-      <div class="sider">
-        <div class="fill shadow-container" v-for="card in cards">
-          <Card :card="card" />
-        </div>
-        <h4 style="color: gray;margin-left: 1em;margin-bottom: 0.5em;">提交贡献者名单</h4>
-        <ul style="margin: 0.5em 0;">
-          <li v-for="time, poster of posters"
-            v-show="poster > 0"
-            :class="posters[0] - time < 12 ? 'online' : posters[0] - time < 60 ? 'wait' : 'offline'">
-            <span v-if="posters[0] - time < 60">
-              {{ getNmae(poster) + (posters[0] - time)  + ' 秒前'}}
-            </span>
-            <span v-else>
-              {{ getNmae(poster) + '很久之前'}}
-            </span>
-          </li>
-        </ul>
-        <a href="https://github.com/Drelf2018/weibo-webhook/tree/main/Poster" target="_blank" style="color: gray;">
-          <p style="font-size: 14px;margin-top:0.5em;text-align: right;">如何成为提交者</p>
-        </a>
-      </div>
-    </div>
+    <slot name="right" :posters="posters"></slot>
   </div>
 </template>
 
 <script setup lang="ts">
 import axios from 'axios'
 
-import { ApiUrl, Theme, Picture, userInfo, faceInfo } from '../components/tool'
+import { ApiUrl, Theme, faceInfo, NoticePost } from '../components/tool'
 import { ref, Ref, defineExpose, defineProps, PropType } from 'vue'
 
 import Nav from '../components/Nav.vue'
-import Card from '../components/Card.vue'
 import Post from '../components/Post.vue'
-import iPhone from '../components/iPhone.vue'
-import Swiper from '../components/Swiper.vue'
 
 defineProps({
   isCovered: Boolean,
   theme: Object as PropType<Theme>
 })
-
-// 日历
-const calendar = ref(new Date())
 
 // 自动播放好运来的组件
 const Phone = ref(null)
@@ -113,22 +69,9 @@ const face: Ref<faceInfo> = ref({
   pendant: "",
   pendant_color: ""
 })
-// 右侧卡片和画框
-const cards = ref([])
-const pictures = ref([])
 
 // 登录
 login(uid.value, token.value).then(getFace).catch(console.log)
-
-// 获取画框封面
-TaskWaitAll([
-  "BV1Nd4y1E7Xi", "BV1NV4y1s7qy", "BV1Wq4y1g7SW", "BV1WQ4y1i7NH", "BV1Y541177Rg", "BV18q4y1z7Vv",
-  "BV1vJ411B7ng", "BV1n3411Y7fR", "BV1d34y1D7Vk", "BV1wT4y1r7g6", "BV1924y1R76y", "BV1JA4y1d7Bb",
-  "BV1yU4y1W7Y2", "BV1tU4y1R7qu", "BV1yf4y137XH", "BV16D4y177Ef", "BV1DK4y1g7zE", "BV19K4y1p7Zh"
-]).then(result => {
-  pictures.value = result
-  pictures.value.push(pictures.value[0])
-})
 
 // 获取博文函数
 const BeginTime = ref(Math.ceil(new Date().getTime() / 1000))
@@ -178,39 +121,10 @@ async function NewPost() {
       else return
       let res = await axios.get("https://aliyun.nana7mi.link/video.Video(bvid=BV1ty4y1E7w9).get_download_url(0:int,html5=1).durl")
       Phone.value.play(res.data.data[0].url)
+      NoticePost(post)
       searchHandler("")
     })
   }
-}
-
-// 卡片
-axios.get(`https://aliyun.nana7mi.link/live.LiveRoom(21452505).get_room_info()`).then(res => {
-  let data = res.data.data
-  let info: userInfo = {
-    cover_href: `https://live.bilibili.com/${data.room_info.room_id}`,
-    cover_url: data.room_info.cover.replace("http://", "https://"),
-    face_href: `https://space.bilibili.com/${data.room_info.uid}`,
-    face_url: data.anchor_info.base_info.face,
-    pendant: "",
-    pendant_color: "rgb(251, 114, 153)",
-    title: data.anchor_info.base_info.uname,
-    title_color: "rgb(251, 114, 153)",
-    subtitle: `粉丝 ${data.anchor_info.relation_info.attention} - 舰长 ${data.guard_info.count}`
-  }
-  cards.value.push(info)
-})
-
-// 获取b站名字
-const uid2name = {}
-function getNmae(uid: number) {
-  if (uid == 0) return ""
-  if (!uid2name[uid]) {
-    uid2name[uid] = uid
-    axios.get(`https://aliyun.nana7mi.link/user.User(${uid}).get_user_info().name?max_age=86400`).then(
-      res => uid2name[uid] = res.data.data + " "
-    ).catch(console.log)
-  }
-  return uid2name[uid]
 }
 
 // 登录
@@ -256,23 +170,6 @@ function searchHandler(search: string) {
   } else {
     FilterPosts.value = TotalPosts
   }
-}
-
-function TaskWaitAll(args: Array<String>) {
-  function getPicture(bv: String) {
-    return axios.get(`https://aliyun.nana7mi.link/video.Video(${bv}).get_info().pic?max_age=2592000`).then(
-      res => {
-        let pic: Picture = {
-          link: `https://www.bilibili.com/video/${bv}`,
-          url: res.data.data.replace("http://", "https://")
-        }
-        return pic
-      }
-    )
-  }
-  let taskall = []
-  for (let arg of args) taskall.push(getPicture(arg))
-  return Promise.all(taskall)
 }
 </script>
 

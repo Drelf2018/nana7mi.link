@@ -17,23 +17,3 @@ body {
     color: #2c3e50;
     transition: background-color 0.2s;
 }
-
-@media screen and (min-width: 1200px) {
-    .pc {
-        zoom: var(--zoom);
-    }
-}
-
-@media screen and (max-width: 1200px) {
-    .pc {
-        zoom: calc(1.15 * var(--zoom));
-    }
-}
-
-.mobile .hidden {
-    display: none;
-}
-
-.mobile .post {
-    width: 92%;
-}
