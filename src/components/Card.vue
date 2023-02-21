@@ -5,7 +5,7 @@
     <div class="show">
       <Face :face="card" style="margin: 0.24em;" />
       <span>  
-        <div>
+        <div :class="{cmt: card.subtitle == null}">
           <span :style="{color: card.title_color}">{{ card.title }}</span>
           <slot></slot>
         </div>
@@ -50,6 +50,10 @@ defineProps({ card: Object as PropType<userInfo> })
 
   div {
     font-size: 0.48em;
+  }
+
+  .cmt {
+    font-size: 0.3em !important;
   }
 
   p {

@@ -7,7 +7,7 @@
     <img :src="src" v-for="src in post.picUrls" :style="{width: imgWidth}">
     <Post v-if="post.repost" :key="post.repost.key" :opost="post.repost" />
     <p class="date" :style="[post.attachment.length != 0 ? '' : 'margin-bottom: 0']">{{ post.date }} {{ post.source }}</p>
-    <Comments :comments="comments" v-for="comments in post.attachment"></Comments>
+    <Comments :comments="comments" v-for="comments, i in post.attachment" :last="i == post.attachment.length-1"></Comments>
   </div>
 </template>
 
@@ -42,7 +42,7 @@ function handler(post) {
         pendant_color: post.type == "weibo" ? "#eb7350" : "transparent",
         title: post.name,
         title_color: "#eb7350",  //"rgb(251, 114, 153)"
-        subtitle: post.description
+        subtitle: post.type == "weibo" ? post.description : null
       }
       if(post.type == "weibo") post.url = `https://weibo.com/${post.uid}/${post.mid}`
       else post.url = `https://weibo.com/${post.uid}/${post.attachment[0].replace("weibo", "")}`
