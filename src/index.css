@@ -1,17 +1,10 @@
-@font-face {
-    font-family: 'HarmonyOS_Bold';
-    src: url('https://yun.nana7mi.link/HarmonyOS_Sans_SC_Bold.ttf');
-    font-weight: normal;
-    font-style: normal;
-}
-
 body {
     margin: 0;
     transition: background-color 0.2s;
 }
 
 #app {
-    font-family: HarmonyOS_Bold, Avenir, Helvetica, Arial, sans-serif;
+    font-family: HarmonyOS_Medium, Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;

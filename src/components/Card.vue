@@ -4,13 +4,13 @@
     <div v-if="card.cover_href" class="linear"></div>
     <div class="show">
       <Face :face="card" style="margin: 0.24em;" />
-      <strong>  
+      <span>  
         <div>
           <span :style="{color: card.title_color}">{{ card.title }}</span>
           <slot></slot>
         </div>
         <p>{{ card.subtitle }}</p>
-      </strong>
+      </span>
     </div>
   </div>
 </template>

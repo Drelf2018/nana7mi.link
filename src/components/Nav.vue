@@ -116,7 +116,7 @@ onMounted(() => {
       transition: all 0.2s;
 
       ion-icon {
-        vertical-align: -4px;
+        vertical-align: -7px;
       }
 
       [aria-label=sunny] {

@@ -31,7 +31,7 @@
               <div class="fill shadow-container" v-for="card in cards">
                 <Card :card="card" />
               </div>
-              <h4 style="color: gray;margin-left: 1em;margin-bottom: 0.5em;">提交贡献者名单</h4>
+              <p style="color: gray;margin-left: 0.75em;margin-bottom: 0.5em;">提交者名单</p>
               <ul style="margin: 0.5em 0;">
                 <li v-for="time, poster of posters"
                   v-show="poster > 0"

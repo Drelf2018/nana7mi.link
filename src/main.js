@@ -3,6 +3,7 @@ import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
 import { createRouter, createWebHistory } from 'vue-router'
 
+import './medium.css'
 import './index.css'
 import 'element-plus/dist/index.css'
 
