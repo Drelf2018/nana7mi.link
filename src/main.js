@@ -10,11 +10,13 @@ import 'element-plus/dist/index.css'
 import App from './App.vue'
 import PC from './views/PC.vue'
 import Mobile from './views/Mobile.vue'
+import User from './views/User.vue'
 
 const router = createRouter({
     history: createWebHistory(),
     routes: [
         { path: '/', component: document.body.offsetWidth < 750 ? Mobile : PC },
+        { path: '/user', component: User },
     ]
 })
 

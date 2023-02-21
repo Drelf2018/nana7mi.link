@@ -175,7 +175,7 @@ function login() {
     border-radius: 0.5em;
     padding: 0 14px;
     color: #3d5245;
-    font-family: HarmonyOS_Bold;
+    font-family: HarmonyOS_Medium;
     font-size: 16px;
     transition: all 0.2s;
   }

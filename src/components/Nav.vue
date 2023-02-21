@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, PropType, defineProps, onMounted, defineEmits } from 'vue'
+import { ref, PropType, onMounted } from 'vue'
 import { Theme, faceInfo } from './tool'
 
 import Face from './Face.vue'

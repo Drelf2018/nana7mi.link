@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, PropType } from 'vue'
+import { PropType } from 'vue'
 import { faceInfo } from './tool'
 
 defineProps({ face: Object as PropType<faceInfo> })

@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, defineProps, defineExpose } from 'vue'
+import { ref, onMounted } from 'vue'
 import visibility from 'vue-visibility-change'
 
 import { Spine } from './spine_runtime/spine'

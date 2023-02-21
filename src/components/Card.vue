@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, PropType } from 'vue'
+import { PropType } from 'vue'
 import { userInfo } from './tool'
 
 import Face from './Face.vue'

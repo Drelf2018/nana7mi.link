@@ -7,8 +7,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
-
 import Card from './Card.vue'
 
 defineProps({ comments: Object })
