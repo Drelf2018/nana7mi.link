@@ -16,7 +16,7 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         { path: '/', component: document.body.offsetWidth < 750 ? Mobile : PC },
-        { path: '/user', component: User },
+        { path: '/user', component: document.body.offsetWidth < 750 ? Mobile : User },
     ]
 })
 
