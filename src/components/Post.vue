@@ -7,7 +7,7 @@
     <img :src="src" v-for="src in post.picUrls" :style="{width: imgWidth}">
     <Post v-if="post.repost" :key="post.repost.key" :opost="post.repost" />
     <p class="date" :style="[post.attachment.length != 0 ? '' : 'margin-bottom: 0']">{{ post.date }} {{ post.source }}</p>
-    <Comments :comments="comments" v-for="comments, i in post.attachment" :last="i == post.attachment.length-1"></Comments>
+    <Comments :key="comments.mid" :comments="comments" v-for="comments, i in post.attachment" :last="i == post.attachment.length-1"></Comments>
   </div>
 </template>
 
@@ -49,7 +49,19 @@ function handler(post) {
       break
   }
   if(post.repost) post.repost = handler(post.repost)
-  if(post.type=="weibo" && post.attachment) post.attachment = post.attachment.map(handler)
+  if(post.type=="weibo" && post.attachment) {
+    let pl = []
+    post.attachment = post.attachment.filter(post => {
+      if(pl.indexOf(post.mid) == -1) {
+        while(post != null) {
+          pl.push(post.mid)
+          post = post.repost
+        }
+        return true 
+      }
+      return false
+    }).reverse().map(handler)
+  }
   return post
 }
 
