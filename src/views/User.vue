@@ -8,7 +8,7 @@
                             <el-avatar :size="32" class="mr-3" src="/favicon.ico" />
                             <span class="text-large font-600 mr-3"> 编辑配置文件 </span>
                             <span class="text-sm mr-2" style="font-size: 14px; color: var(--el-text-color-regular)">
-                                一定要先检查再提交
+                              您的密钥：{{ token }}
                             </span>
                         </div>
                     </template>
@@ -64,6 +64,8 @@ import { ref } from 'vue'
 const theme = ref(new Theme)
 // 代码区
 const code = ref(null)
+
+const token = ref(localStorage.getItem("token"))
 
 const activities = ref([
   {
@@ -128,8 +130,8 @@ jobs:
   ${post.type+post.uid}: 
     url: https://api.nana7mi.link/recv
     data:
-      msg: "收到{name}新动态: {text}"
-      # 那么发送时会转换为 {msg: "收到${post.name}新动态: ${post.text}"}
+      msg: "收到{name}新动态: {text}[CQ:image,file={picUrls[0]}]"
+      # 那么发送时会转换为 {msg: "收到${post.name}新动态: ${post.text}[CQ:image,file=${post.picUrls[0]}]"}
 `
       code.value.changeEditor(text)
     } else {
@@ -160,7 +162,7 @@ function checkYAML() {
             type: 'primary'
         }
         activities.value.push({
-            content: '检查失败',
+            content: error,
             color: 'red',
             timestamp: Format(new Date(), "yy-MM-dd hh:mm:ss"),
             type: 'primary',
@@ -174,8 +176,8 @@ function checkYAML() {
 
 <style lang="scss">
 .code {
-    width: calc(100%);
-    height: 552px;
+    width: 100%;
+    height: calc(100vh - 160px);
     border-radius: 10px;
     overflow: hidden;
 }
