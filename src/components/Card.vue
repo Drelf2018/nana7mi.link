@@ -59,15 +59,11 @@ defineProps({ card: Object as PropType<userInfo> })
   }
 }
 
-.pc {
-  .cmt {
-    font-size: 0.35em !important;
-  }
+.pc .cmt {
+  font-size: 0.43em !important;
 }
 
-.mobile {
-  .cmt {
-    font-size: 0.5em !important;
-  }
+.mobile .cmt {
+  font-size: 0.5em !important;
 }
 </style>

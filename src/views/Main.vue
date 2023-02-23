@@ -1,13 +1,9 @@
 <template>
   <Nav src="https://yun.nana7mi.link/7mi.webp" height="200px" :isCovered="isCovered" @search="searchHandler" :theme="theme" :face="face">
     <div v-if="face.face_href">
-      <p id="p1" :style="{color: face.pendant_color}">{{ name }}</p>
-      <p id="p2" style="color: grey;font-size:8px">{{ token }}</p>
-      <p>LV{{ me.level }} {{ me.xp }} / 100</p>
-      <div style="border: 1px solid rgb(230,232,234);"></div>
-      <p @click="clean">
-        退出登录
-      </p>
+      <p :style="{color: face.pendant_color}">{{ name }}</p>
+      <p>LV{{ me.level }} XP{{ me.xp }}</p>
+      <el-button type="primary" @click="clean">退出登录</el-button>
     </div>
     <div v-else align="center">
       <img src="https://i0.hdslb.com/bfs/new_dyn/0de10012b4a96d7d4bcd82728f77b2051464240042.png" style="border-radius: 10px;">
@@ -92,10 +88,12 @@ async function GetPastPost() {
       for(let i=0;i<tp.length;i++) {
         if(tp[i].type == "weiboComment") {
           let j = key2index[tp[i].attachment[0]]
-          if(j && tp[i].uid == tp[j].uid) tp[j].attachment.push(tp[i])
+          if(j) tp[j].attachment.push(tp[i])
         }
       }
-      PastPosts.value = PastPosts.value.concat(tp)
+      PastPosts.value = PastPosts.value.concat(tp.filter(
+        (post, idx, _) => key2index[post.key] == idx
+      ))
       searchHandler("")
     } else {
       await GetPastPost()
@@ -174,14 +172,6 @@ function searchHandler(search: string) {
 </script>
 
 <style lang="scss">
-#p2 {
-  display: none;
-}
-
-#p1:hover + #p2 {
-  display: block;
-}
-
 ul {
   color: grey;
   font-size: 14px;

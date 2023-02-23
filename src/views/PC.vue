@@ -23,13 +23,13 @@
         <template #right="{ posters }">
           <StickyArea>
             <template #normal>
-              <div class="fill shadow-container" style="margin-bottom: 8px;">
-                <Swiper speed="2000" width="292px" :pictures="pictures" />
+              <div class="fill shadow-container" v-for="card in cards">
+                <Card :card="card" />
               </div>
             </template>
             <template #sticky>
-              <div class="fill shadow-container" v-for="card in cards">
-                <Card :card="card" />
+              <div class="fill shadow-container" style="margin-bottom: 8px;">
+                <Swiper speed="2000" width="292px" :pictures="pictures" />
               </div>
               <p style="color: gray;margin-left: 0.75em;margin-bottom: 0.5em;">提交者名单</p>
               <ul style="margin: 0.5em 0;">

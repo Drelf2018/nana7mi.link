@@ -7,7 +7,13 @@
     <img :src="src" v-for="src in post.picUrls" :style="{width: imgWidth}">
     <Post v-if="post.repost" :key="post.repost.key" :opost="post.repost" />
     <p class="date" :style="[post.attachment.length != 0 ? '' : 'margin-bottom: 0']">{{ post.date }} {{ post.source }}</p>
-    <Comments :key="comments.mid" :comments="comments" v-for="comments, i in post.attachment" :last="i == post.attachment.length-1"></Comments>
+    <Comments 
+      :key="comments.mid"
+      :comments="comments"
+      :reply="false"
+      :last="i == post.attachment.length-1"
+      v-for="comments, i in post.attachment"
+    />
   </div>
 </template>
 
@@ -30,39 +36,62 @@ function handler(post) {
   post.pendant = replaceUrl(post.pendant)
   post.picUrls = replaceUrls(post.picUrls)
   post.date = Format(new Date(post.time * 1000), "yy-MM-dd hh:mm:ss")
+  post.card = {
+    cover_href: null,
+    cover_url: null,
+    face_href: "",
+    face_url: post.face,
+    pendant: post.pendant,
+    pendant_color: "",
+    title: post.name,
+    title_color: "#eb7350",
+    subtitle: null
+  }
   switch (post.type) {
     case "weibo":
-    case "weiboComment":
-      post.card = {
-        cover_href: null,
-        cover_url: null,
-        face_href: `https://weibo.com/u/${post.uid}`,
-        face_url: post.face,
-        pendant: post.pendant,
-        pendant_color: post.type == "weibo" ? "#eb7350" : "transparent",
-        title: post.name,
-        title_color: "#eb7350",  //"rgb(251, 114, 153)"
-        subtitle: post.type == "weibo" ? post.description : null
+      post.card.face_href = `https://weibo.com/u/${post.uid}`
+      post.card.pendant_color = "#eb7350"
+      post.card.subtitle = post.description
+      post.url = `https://weibo.com/${post.uid}/${post.mid}`
+      if(post.repost) post.repost = handler(post.repost)
+      if(post.attachment) {
+        let pl = []
+        post.attachment.reverse().forEach(post => {
+          if(post.repost == null) Set(pl, post)
+          else Insert(pl, post)
+        })
+        post.attachment = pl.map(handler)
       }
-      if(post.type == "weibo") post.url = `https://weibo.com/${post.uid}/${post.mid}`
-      else post.url = `https://weibo.com/${post.uid}/${post.attachment[0].replace("weibo", "")}`
+      break
+    case "weiboComment":
+      post.card.face_href = `https://weibo.com/u/${post.uid}`
+      post.card.pendant_color = "transparent"
+      if(post.repost.length != 0) post.repost = post.repost.map(handler)
       break
   }
-  if(post.repost) post.repost = handler(post.repost)
-  if(post.type=="weibo" && post.attachment) {
-    let pl = []
-    post.attachment = post.attachment.filter(post => {
-      if(pl.indexOf(post.mid) == -1) {
-        while(post != null) {
-          pl.push(post.mid)
-          post = post.repost
-        }
-        return true 
-      }
-      return false
-    }).reverse().map(handler)
-  }
   return post
+}
+
+function Set(pl, post) {
+  let flag = false
+  for(let i=0;i<pl.length;i++) if(pl[i].mid == post.mid) {
+    flag=true
+    break
+  }
+  if(!flag) {
+    post.repost = []
+    pl.push(post)
+  }
+}
+
+function Insert(pl, post) {
+  for(let i=0;i<pl.length;i++) {
+    if(post.repost.type + post.repost.mid == pl[i].key) {
+      Set(pl[i].repost, post)
+      return
+    }
+    Insert(pl[i].repost, post)
+  }
 }
 
 function replaceUrl(url: string) {
