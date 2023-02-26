@@ -68,17 +68,20 @@ export class Theme {
     theme: string
     app: HTMLElement
     zoom: number
+    isPC: boolean
     constructor() {
         this.app = document.getElementById("app")
         if (document.body.offsetWidth < 750) {
+            this.isPC = false
             this.app.classList.add("mobile")
             let timeNow = new Date().getHours()
-            if (timeNow >= 21 || timeNow < 6) {
+            if (timeNow >= 23 || timeNow < 6) {
                 this.theme = "dark"
             } else {
                 this.theme = "light"
             }
         } else {
+            this.isPC = true
             this.app.classList.add("pc")
             this.theme = localStorage.getItem("theme") || "light"
         }

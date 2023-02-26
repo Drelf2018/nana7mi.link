@@ -143,6 +143,10 @@ onMounted(() => {
 .nav-container {
   text-align: center;
   height: var(--height);
+
+  .mobile & {
+    height: 64px !important;
+  }
 }
 
 .nav-header {
@@ -161,6 +165,10 @@ onMounted(() => {
 .nav-picture {
   // filter: contrast(90%);
   // position: absolute;
+  .mobile & {
+    background-image: none !important;
+  }
+
   top: 0;
   width: 100%;
   height: var(--height);

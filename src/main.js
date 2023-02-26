@@ -9,8 +9,8 @@ import 'element-plus/dist/index.css'
 
 import App from './App.vue'
 import PC from './views/PC.vue'
-import Mobile from './views/Mobile.vue'
 import User from './views/User.vue'
+import Mobile from './views/Mobile.vue'
 
 const router = createRouter({
     history: createWebHistory(),

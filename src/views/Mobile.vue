@@ -1,5 +1,5 @@
 <template>
-  <Main ref="main" :isCovered="isCovered" :theme="theme"></Main>
+  <Main ref="main" :isCovered="true" :theme="theme"></Main>
 </template>
   
 <script setup lang="ts">
@@ -10,20 +10,6 @@ import { ref } from 'vue'
 
 // 主题
 const theme = ref(new Theme)
-
-// 滚盘判断头部是否隐藏以及是否更新早期博文
-const main = ref(null)
-const compareHeight = Math.max(1, theme.value.zoom) * 136
-const isCovered = ref(compareHeight <= 0)
-
-window.onscroll = () => {
-  let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-  isCovered.value = compareHeight <= scrollTop
-
-  let clientHeight = document.documentElement.clientHeight
-  let scrollHeight = document.documentElement.scrollHeight
-  if (scrollTop + clientHeight >= scrollHeight - 64) main.value.GetPastPost()
-}
 </script>
 
 <style>

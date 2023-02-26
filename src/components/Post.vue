@@ -93,6 +93,10 @@ function replaceUrls(urls: [string]) {
 
   &[aria-label="alert circle outline"] {
     right: 2.25em;
+
+    .mobile & {
+      display: none;
+    }
   }
 }
 

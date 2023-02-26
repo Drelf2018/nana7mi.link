@@ -13,12 +13,12 @@
 
   <div class="content">
     <slot name="left"></slot>
-    <div class="post">
+    <div v-infinite-scroll="GetPastPost" :infinite-scroll-immediate="false" class="post">
       <Post :key="post.key" :opost="post" v-for="post in FilterPosts" />
       <p v-if="BeginTime <= 1675768827" style="text-align: center;color: grey">
-        <span style="font-size: 0.1em;">◥</span> 
+        <span style="font-size: 0.5em;">◥</span> 
         到底了啦
-        <span style="font-size: 0.1em;">◤</span>
+        <span style="font-size: 0.5em;">◤</span>
       </p>
     </div>
     <slot name="right" :posters="posters"></slot>
@@ -34,7 +34,7 @@ import { ref, Ref, PropType } from 'vue'
 import Nav from '../components/Nav.vue'
 import Post from '../components/Post.vue'
 
-defineProps({
+const props = defineProps({
   isCovered: Boolean,
   theme: Object as PropType<Theme>
 })
@@ -67,14 +67,14 @@ const face: Ref<faceInfo> = ref({
 })
 
 // 登录
-login(uid.value, token.value).then(getFace).catch(console.log)
+if(props.theme.isPC) login(uid.value, token.value).then(getFace).catch(console.log)
 
 // 获取博文函数
 const BeginTime = ref(Math.ceil(new Date().getTime() / 1000))
 // 获取一定数量的初始博文
 GetPastPost()
 async function GetPastPost() {
-  if (BeginTime.value <= 1666969128) return
+  if (BeginTime.value <= 1675768827 - 7 * 86400) return
   BeginTime.value -= 7 * 86400
   let res = await axios.get(ApiUrl + "/post", { params: { beginTs: BeginTime.value, endTs: BeginTime.value + 7 * 86400 } })
   if (res.data.code == 0) {
@@ -103,11 +103,13 @@ async function GetPastPost() {
 defineExpose({ GetPastPost })
 
 // 更新贡献者提交时间
-setInterval(() => posters.value[0] += 1, 1000)
+if(props.theme.isPC) setInterval(() => posters.value[0] += 1, 1000)
 
 // 每五秒获取新博文
-NewPost()
-setInterval(NewPost, 4500)
+if(props.theme.isPC) {
+  NewPost()
+  setInterval(NewPost, 4500)
+}
 async function NewPost() {
   let res = await axios.get(ApiUrl + "/post")
   if (res.data.code == 0) {

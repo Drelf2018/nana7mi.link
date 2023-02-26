@@ -44,7 +44,7 @@
                   </span>
                 </li>
               </ul>
-              <a href="https://github.com/Drelf2018/weibo-webhook/tree/main/Poster" target="_blank" style="color: gray;">
+              <a href="https://github.com/Drelf2018/weibo-poster" target="_blank" style="color: gray;">
                 <p style="font-size: 14px;margin-top:0.5em;text-align: right;">如何成为提交者</p>
               </a>
             </template>
@@ -66,7 +66,7 @@ import StickyArea from '../components/StickyArea.vue'
 
 import { Theme, userInfo, Picture } from '../components/tool'
 
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 
 import axios from 'axios'
 
@@ -85,15 +85,10 @@ document.body.style.overflow = "hidden"
 const isCovered = ref(false)
 const scrollbar = ref(null)
 const main = ref(null)
-let OnScroll = null
 
-onMounted(() => {
-  let container = scrollbar.value.wrapRef
-  OnScroll = function(evt) {
-    if(evt.scrollTop >= container.firstChild.offsetHeight - container.offsetHeight - 10) main.value.GetPastPost()
-    isCovered.value = 136 <= evt.scrollTop
-  }
-})
+function OnScroll(evt) {
+  isCovered.value = 136 <= evt.scrollTop
+}
 
 // 获取画框封面
 TaskWaitAll([
