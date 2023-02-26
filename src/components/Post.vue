@@ -6,13 +6,13 @@
     <p v-html="post.text"></p>
     <img :src="src" v-for="src in post.picUrls" :style="{width: imgWidth}">
     <Post v-if="post.repost" :key="post.repost.key" :opost="post.repost" />
-    <p class="date" :style="[post.attachment.length != 0 ? '' : 'margin-bottom: 0']">{{ post.date }} {{ post.source }}</p>
+    <p class="date" :style="[post.comments.length != 0 ? '' : 'margin-bottom: 0']">{{ post.date }} {{ post.source }}</p>
     <Comments 
-      :key="comments.mid"
-      :comments="comments"
+      :key="com.mid"
+      :comment="com"
       :reply="false"
-      :last="i == post.attachment.length-1"
-      v-for="comments, i in post.attachment"
+      :last="i == post.comments.length-1"
+      v-for="com, i in post.comments"
     />
   </div>
 </template>
@@ -53,45 +53,15 @@ function handler(post) {
       post.card.pendant_color = "#eb7350"
       post.card.subtitle = post.description
       post.url = `https://weibo.com/${post.uid}/${post.mid}`
-      if(post.repost) post.repost = handler(post.repost)
-      if(post.attachment) {
-        let pl = []
-        post.attachment.reverse().forEach(post => {
-          if(post.repost == null) Set(pl, post)
-          else Insert(pl, post)
-        })
-        post.attachment = pl.map(handler)
-      }
+      if(post.repost) post.repost = handler(post.repost)   
       break
     case "weiboComment":
       post.card.face_href = `https://weibo.com/u/${post.uid}`
       post.card.pendant_color = "transparent"
-      if(post.repost.length != 0) post.repost = post.repost.map(handler)
       break
   }
+  if(post.comments.length != 0) post.comments = post.comments.map(handler)
   return post
-}
-
-function Set(pl, post) {
-  let flag = false
-  for(let i=0;i<pl.length;i++) if(pl[i].mid == post.mid) {
-    flag=true
-    break
-  }
-  if(!flag) {
-    post.repost = []
-    pl.push(post)
-  }
-}
-
-function Insert(pl, post) {
-  for(let i=0;i<pl.length;i++) {
-    if(post.repost.type + post.repost.mid == pl[i].key) {
-      Set(pl[i].repost, post)
-      return
-    }
-    Insert(pl[i].repost, post)
-  }
 }
 
 function replaceUrl(url: string) {
