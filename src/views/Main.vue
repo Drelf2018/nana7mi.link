@@ -13,7 +13,11 @@
 
   <div class="content">
     <slot name="left"></slot>
-    <div v-infinite-scroll="GetPastPost" :infinite-scroll-immediate="false" class="post">
+    <div 
+      v-infinite-scroll="GetPastPost" 
+      :infinite-scroll-immediate="false" 
+      :infinite-scroll-distance="30"
+      class="post">
       <Post :key="post.key" :opost="post" v-for="post in FilterPosts" />
       <p v-if="BeginTime <= 1675768827" style="text-align: center;color: grey">
         <span style="font-size: 0.5em;">◥</span> 
@@ -27,6 +31,7 @@
 
 <script setup lang="ts">
 import axios from 'axios'
+import jsYaml from 'js-yaml'
 
 import { ApiUrl, Theme, faceInfo, NoticePost } from '../components/tool'
 import { ref, Ref, PropType } from 'vue'
@@ -47,6 +52,7 @@ const uid = ref(localStorage.getItem("uid"))
 const token = ref(localStorage.getItem("token"))
 
 // 服务器返回用户数据
+const star = ref(false)
 const me = ref()
 const name = ref("")
 const users = ref([])
@@ -67,14 +73,14 @@ const face: Ref<faceInfo> = ref({
 })
 
 // 登录
-if(props.theme.isPC) login(uid.value, token.value).then(getFace).catch(console.log)
+if(props.theme.isPC) login(uid.value, token.value).then(getWatch).then(getFace).catch(console.log)
 
 // 获取博文函数
 const BeginTime = ref(Math.ceil(new Date().getTime() / 1000))
 // 获取一定数量的初始博文
 GetPastPost()
 async function GetPastPost() {
-  if (BeginTime.value <= 1675768827 - 7 * 86400) return
+  if (BeginTime.value <= 1666969128 - 7 * 86400) return
   BeginTime.value -= 7 * 86400
   let res = await axios.get(ApiUrl + "/post", { params: { beginTs: BeginTime.value, endTs: BeginTime.value + 7 * 86400 } })
   if (res.data.code == 0) {
@@ -84,6 +90,7 @@ async function GetPastPost() {
       for(let i=0;i<tp.length;i++) {
         tp[i].key = tp[i].type + tp[i].mid
         key2index[tp[i].key] = i
+        LastPostTime = Math.max(LastPostTime, tp[i].time + 1)
       }
       for(let i=0;i<tp.length;i++) {
         if(tp[i].type == "weiboComment") {
@@ -94,7 +101,7 @@ async function GetPastPost() {
       PastPosts.value = PastPosts.value.concat(tp.filter(
         (post, idx, _) => key2index[post.key] == idx
       ))
-      searchHandler("")
+      setTimeout(() => searchHandler(""), 30)
     } else {
       await GetPastPost()
     }
@@ -106,12 +113,13 @@ defineExpose({ GetPastPost })
 if(props.theme.isPC) setInterval(() => posters.value[0] += 1, 1000)
 
 // 每五秒获取新博文
+let LastPostTime = Math.ceil(new Date().getTime() / 1000)
 if(props.theme.isPC) {
   NewPost()
   setInterval(NewPost, 4500)
 }
 async function NewPost() {
-  let res = await axios.get(ApiUrl + "/post")
+  let res = await axios.get(ApiUrl + "/post", { params: { beginTs: LastPostTime } })
   if (res.data.code == 0) {
     posters.value = res.data.poster
     res.data.data.forEach(async post => {
@@ -119,10 +127,11 @@ async function NewPost() {
       if (FuturePosts.value.length == 0) FuturePosts.value = [post]
       else if (FuturePosts.value[0].time != post.time) FuturePosts.value.unshift(post)
       else return
+      LastPostTime = post.time + 1
       let res = await axios.get("https://aliyun.nana7mi.link/video.Video(bvid=BV1ty4y1E7w9).get_download_url(0:int,html5=1).durl")
       Phone.value.play(res.data.data[0].url)
       NoticePost(post)
-      searchHandler("")
+      setTimeout(() => searchHandler(""), 30)
     })
   }
 }
@@ -133,6 +142,18 @@ async function login(uid: string, token: string) {
   if (res.data.code != 0) throw res.data.data
   res.data.data.filter(u => u.uid == uid).forEach(u => me.value = u)
   users.value = res.data.data
+  return me.value.file
+}
+
+// 获取 watch
+async function getWatch(url: string) {
+  if(url) axios.get(`https://api.nana7mi.link/yml${url}`).then(
+    res => {
+      let yml = jsYaml.load(res.data)
+      me.value.watch = yml.listening
+      star.value = yml.listening[0] == "*"
+    }
+  )
 }
 
 // 获取用户头像
@@ -140,7 +161,7 @@ async function getFace() {
   let res = await axios.get(`https://aliyun.nana7mi.link/user.User(${uid.value}).get_user_info()`)
   let data = res.data.data
   let info: faceInfo = {
-    face_href: `/user`,
+    face_href: "/user",
     face_url: data.face,
     pendant: data.pendant.image,
     pendant_color: data.vip.nickname_color,
@@ -161,7 +182,8 @@ function searchHandler(search: string) {
     post => {
       let watch = post.type+post.uid
       if (watch == "weibo7198559139") return true
-      else if ((me.value && me.value.watch.length > 0) && ("*" in me.value.watch || watch in me.value.watch)) return true
+      if (star.value) return true
+      if (me.value.watch) if(me.value.watch.indexOf(watch) != -1) return true
       return false
     }
   )
