@@ -15,7 +15,7 @@
           <template #extra>
             <div class="flex items-center">
               <el-button @click="checkYAML">检查</el-button>
-              <el-button type="primary" class="ml-2">提交</el-button>
+              <el-button @click="commit" type="primary" class="ml-2">提交</el-button>
             </div>
           </template>
         </el-page-header>
@@ -59,6 +59,7 @@ const theme = ref(new Theme)
 // 代码区
 const code = ref(null)
 
+const uid = ref(localStorage.getItem("uid"))
 const token = ref(localStorage.getItem("token"))
 
 const activities = ref([
@@ -73,6 +74,29 @@ setInterval(() => {
   activities.value[0].timestamp = Format(new Date(), "yy-MM-dd hh:mm:ss")
 }, 1000)
 
+login(uid.value, token.value).then(getWatch).catch(console.log)
+
+let PostInfo = ""
+
+const DefaultConfig = `listening:
+- weibo7198559139
+- weiboComment7198559139
+jobs:
+- patten: weibo7198559139
+  method: POST
+  url: https://httpbin.org/post
+  headers: {}
+  data:
+    msg: '收到{name}新动态: {text}'
+    pics: '{picUrls}'
+- patten: weiboComment7198559139
+  method: POST
+  url: https://httpbin.org/post
+  headers: {}
+  data:
+    msg: '收到{name}新评论: {text}'
+    pics: '{picUrls}'
+`
 // 获取博文函数
 const PastPosts = ref([])
 // 获取一定数量的初始博文
@@ -99,7 +123,7 @@ async function GetPastPost() {
       for (let i in post.picUrls) {
         picUrls += "\n    - " + post.picUrls[i]
       }
-      let text = `# 仓库 https://github.com/Drelf2018/weibo-webhook/blob/main/post.go#L8
+      PostInfo = `# 仓库 https://github.com/Drelf2018/weibo-webhook/blob/main/post.go#L8
 # 接口 https://api.nana7mi.link/post?beginTs=1676917807&endTs=1676919151
 post:
   mid: ${post.mid}
@@ -116,17 +140,8 @@ post:
   following: ${post.following}
   picUrls: ${picUrls}
   repost: ${post.repost}
-# 上述为 post 格式 不必修改 如需使用值请用 {arg} 的形式 例如下文 {text}
-watchs:
-  - ${post.type + post.uid}
-jobs:
-  ${post.type + post.uid}: 
-    url: https://api.nana7mi.link/recv
-    data:
-      msg: "收到{name}新动态: {text}[CQ:image,file={picUrls[0]}]"
-      # 那么发送时会转换为 {msg: "收到${post.name}新动态: ${post.text}[CQ:image,file=${post.picUrls[0]}]"}
+# 上述为 post 格式 不必修改 如需使用值请用 {arg} 的形式
 `
-      code.value.changeEditor(text)
     } else {
       await GetPastPost()
     }
@@ -135,6 +150,20 @@ jobs:
 
 function onBack() {
   window.location = '/'
+}
+
+function commit() {
+  let yml = checkYAML()
+  console.log({listening: yml.listening, jobs: yml.jobs});
+  // axios.defaults.transformRequest = [function (data) {
+  //   let ret = ''
+  //   for (let it in data) {
+  //     ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+  //   }
+  //   return ret
+  //   }
+  // ]
+  if(yml) axios.post(ApiUrl + `/config?token=${token.value}`, {listening: yml.listening, jobs: yml.jobs})
 }
 
 function checkYAML() {
@@ -147,6 +176,7 @@ function checkYAML() {
       timestamp: Format(new Date(), "yy-MM-dd hh:mm:ss"),
       type: 'primary',
     }]
+    return yml
   } catch (error) {
     activities.value[0] = {
       content: '等待检查',
@@ -163,6 +193,30 @@ function checkYAML() {
   if (activities.value.length > 5) {
     activities.value.splice(1, 1)
   }
+  return null
+}
+
+// 登录
+async function login(uid, token) {
+  let res = await axios.get(ApiUrl + "/login", { params: { uid: uid, token: token } })
+  if (res.data.code != 0) throw res.data.data
+  let url = ""
+  res.data.data.filter(u => u.uid == uid).forEach(u => url = u.file)
+  return url
+}
+
+// 获取 watch
+async function getWatch(url) {
+  if(url) axios.get(`https://api.nana7mi.link/yml${url}`).then(
+    res => {
+      let yml = jsYaml.load(res.data)
+      if(yml) {
+        code.value.changeEditor(PostInfo + res.data)
+      } else {
+        code.value.changeEditor(PostInfo + DefaultConfig)
+      }
+    }
+  )
 }
 </script>
 
