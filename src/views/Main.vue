@@ -182,6 +182,7 @@ function searchHandler(search: string) {
     post => {
       let watch = post.type+post.uid
       if (watch == "weibo7198559139") return true
+      if (!props.theme.isPC) return false
       if (star.value) return true
       if (me.value.watch) if(me.value.watch.indexOf(watch) != -1) return true
       return false
