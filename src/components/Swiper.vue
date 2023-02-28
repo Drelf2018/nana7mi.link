@@ -29,7 +29,7 @@ const props = defineProps({
 const keepMove = ref(0)
 const selected = ref(1)
 const move: Function = throttle(moveNow, 550)
-let timer: NodeJS.Timer = null
+let timer = null
 
 onMounted(start)
 

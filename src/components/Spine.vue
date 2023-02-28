@@ -20,8 +20,8 @@ interface animation {
 }
 
 class Amiya {
+  plan = null
   lambda: number = null
-  plan: NodeJS.Timeout = null
   element: HTMLElement = null
   canvas: HTMLCanvasElement = null
   state: spine.AnimationState = null
