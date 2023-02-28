@@ -16,7 +16,7 @@
     <div 
       v-infinite-scroll="GetPastPost" 
       :infinite-scroll-immediate="false" 
-      :infinite-scroll-distance="30"
+      :infinite-scroll-distance="100"
       class="post">
       <Post :key="post.key" :opost="post" v-for="post in FilterPosts" />
       <p v-if="BeginTime <= 1675768827" style="text-align: center;color: grey">
