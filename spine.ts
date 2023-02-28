@@ -148,7 +148,6 @@ export class Spine {
       console.log('is playing!');
       return;
     }
-    console.log('play', activeSkeleton);
     this.lastFrameTime = Date.now();
     this.activeSkeleton = activeSkeleton;
     this.render();
