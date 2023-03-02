@@ -87,15 +87,15 @@ jobs:
   url: https://httpbin.org/post
   headers: {}
   data:
-    msg: '收到{name}新动态: {text}'
-    pics: '{picUrls}'
+    user_id: "123465"
+    message: '收到{name}新动态: {text}'
 - patten: weiboComment7198559139
   method: POST
   url: https://httpbin.org/post
   headers: {}
   data:
-    msg: '收到{name}新评论: {text}'
-    pics: '{picUrls}'
+    user_id: "123465"
+    message: '收到{name}新评论: {text}'
 `
 // 获取博文函数
 const PastPosts = ref([])
@@ -123,8 +123,9 @@ async function GetPastPost() {
       for (let i in post.picUrls) {
         picUrls += "\n    - " + post.picUrls[i]
       }
-      PostInfo = `# 仓库 https://github.com/Drelf2018/weibo-webhook/blob/main/post.go#L8
+      PostInfo = `# 仓库 https://github.com/Drelf2018/weibo-webhook/blob/main/network.go#L113-L135
 # 接口 https://api.nana7mi.link/post?beginTs=1676917807&endTs=1676919151
+# 以下为 post 格式 不必修改 如需使用值请用 {arg} 形式
 post:
   mid: ${post.mid}
   time: ${post.time}
@@ -140,7 +141,6 @@ post:
   following: ${post.following}
   picUrls: ${picUrls}
   repost: ${post.repost}
-# 上述为 post 格式 不必修改 如需使用值请用 {arg} 的形式
 `
     } else {
       await GetPastPost()
@@ -154,15 +154,6 @@ function onBack() {
 
 function commit() {
   let yml = checkYAML()
-  console.log({listening: yml.listening, jobs: yml.jobs});
-  // axios.defaults.transformRequest = [function (data) {
-  //   let ret = ''
-  //   for (let it in data) {
-  //     ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-  //   }
-  //   return ret
-  //   }
-  // ]
   if(yml) axios.post(ApiUrl + `/config?token=${token.value}`, {listening: yml.listening, jobs: yml.jobs})
 }
 
@@ -179,19 +170,11 @@ function checkYAML() {
     return yml
   } catch (error) {
     activities.value[0] = {
-      content: '等待检查',
-      timestamp: Format(new Date(), "yy-MM-dd hh:mm:ss"),
-      type: 'primary'
-    }
-    activities.value.push({
       content: error,
       color: 'red',
       timestamp: Format(new Date(), "yy-MM-dd hh:mm:ss"),
       type: 'primary',
-    })
-  }
-  if (activities.value.length > 5) {
-    activities.value.splice(1, 1)
+    }
   }
   return null
 }
@@ -211,9 +194,9 @@ async function getWatch(url) {
     res => {
       let yml = jsYaml.load(res.data)
       if(yml) {
-        code.value.changeEditor(PostInfo + res.data)
+        code.value.changeEditor(res.data + PostInfo)
       } else {
-        code.value.changeEditor(PostInfo + DefaultConfig)
+        code.value.changeEditor(DefaultConfig + PostInfo)
       }
     }
   )
