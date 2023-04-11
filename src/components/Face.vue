@@ -43,7 +43,9 @@ function login() {
   #profile {
     position: absolute;
     // height: var(--size);
+    width: 1em;
     height: 1em;
+    object-fit: cover;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

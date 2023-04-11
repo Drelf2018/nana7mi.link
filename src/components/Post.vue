@@ -5,7 +5,7 @@
     <Card :card="post.card" style="margin: -9px"></Card>
     <p v-html="post.text"></p>
     <img :src="src" v-for="src in post.picUrls" :style="{width: imgWidth}">
-    <Post v-if="post.repost" :key="post.repost.key" :opost="post.repost" />
+    <Post v-if="post.repost && post.repost.mid != ''" :key="post.repost.key" :opost="post.repost" />
     <p class="date" :style="[post.comments.length != 0 ? '' : 'margin-bottom: 0']">{{ post.date }} {{ post.source }}</p>
     <Comments 
       :key="com.mid"
@@ -60,6 +60,7 @@ function handler(post) {
       post.card.pendant_color = "transparent"
       break
   }
+  if(post.comments == null) post.comments = []
   if(post.comments.length != 0) post.comments = post.comments.map(handler)
   return post
 }
