@@ -101,7 +101,7 @@ TaskWaitAll([
 })
 
 // 卡片
-axios.get(`https://aliyun.nana7mi.link/live.LiveRoom(21452505).get_room_info()`).then(res => {
+axios.get(`https://gh.nana7mi.link/live.LiveRoom(21452505).get_room_info()`).then(res => {
   let data = res.data.data
   let info: userInfo = {
     cover_href: `https://live.bilibili.com/${data.room_info.room_id}`,
@@ -119,7 +119,7 @@ axios.get(`https://aliyun.nana7mi.link/live.LiveRoom(21452505).get_room_info()`)
 
 function TaskWaitAll(args: Array<String>) {
   function getPicture(bv: String) {
-    return axios.get(`https://aliyun.nana7mi.link/video.Video(${bv}).get_info().pic?max_age=2592000`).then(
+    return axios.get(`https://gh.nana7mi.link/video.Video(${bv}).get_info().pic?max_age=2592000`).then(
       res => {
         let pic: Picture = {
           link: `https://www.bilibili.com/video/${bv}`,
@@ -140,7 +140,7 @@ function getName(uid: number) {
   if (uid == 0) return ""
   if (!uid2name[uid]) {
     uid2name[uid] = uid
-    axios.get(`https://aliyun.nana7mi.link/user.User(${uid}).get_user_info().name?max_age=86400`).then(
+    axios.get(`https://gh.nana7mi.link/user.User(${uid}).get_user_info().name?max_age=86400`).then(
       res => uid2name[uid] = res.data.data + " "
     ).catch(console.log)
   }

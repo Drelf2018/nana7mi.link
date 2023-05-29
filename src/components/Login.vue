@@ -55,7 +55,7 @@ function getToken() {
       token.value = res.data.data[1]
       if (plan) clearInterval(plan)
       plan = setInterval(async () => {
-        let res = await axios.get("https://aliyun.nana7mi.link/comment.get_comments(643451139714449427,type,1:int).replies?var=type%3C-comment.CommentResourceType.DYNAMIC")
+        let res = await axios.get("https://gh.nana7mi.link/comment.get_comments(643451139714449427,type,1:int).replies?var=type%3C-comment.CommentResourceType.DYNAMIC")
         res.data.data.filter(r => r.member.mid == uid.value).forEach(r => {
           if (r.content.message == token.value) {
             canLogin.value = true

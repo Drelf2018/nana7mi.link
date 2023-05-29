@@ -128,7 +128,7 @@ async function NewPost() {
       else if (FuturePosts.value[0].time != post.time) FuturePosts.value.unshift(post)
       else return
       LastPostTime = post.time + 1
-      let res = await axios.get("https://aliyun.nana7mi.link/video.Video(bvid=BV1ty4y1E7w9).get_download_url(0:int,html5=1).durl")
+      let res = await axios.get("https://gh.nana7mi.link/video.Video(bvid=BV1ty4y1E7w9).get_download_url(0:int,html5=1).durl")
       Phone.value.play(res.data.data[0].url)
       NoticePost(post)
       setTimeout(() => searchHandler(""), 30)
@@ -158,7 +158,7 @@ async function getWatch(url: string) {
 
 // 获取用户头像
 async function getFace() {
-  let res = await axios.get(`https://aliyun.nana7mi.link/user.User(${uid.value}).get_user_info()`)
+  let res = await axios.get(`https://gh.nana7mi.link/user.User(${uid.value}).get_user_info()`)
   let data = res.data.data
   let info: faceInfo = {
     face_href: "/user",
