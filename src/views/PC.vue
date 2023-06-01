@@ -70,6 +70,8 @@ import { ref } from 'vue'
 
 import axios from 'axios'
 
+import { get_room_info, get_video_pic, get_user_name } from '../aliyun'
+
 // 主题
 const theme = ref(new Theme)
 // 日历
@@ -101,8 +103,7 @@ TaskWaitAll([
 })
 
 // 卡片
-axios.get(`https://gh.nana7mi.link/live.LiveRoom(21452505).get_room_info()`).then(res => {
-  let data = res.data.data
+get_room_info(21452505).then(data => {
   let info: userInfo = {
     cover_href: `https://live.bilibili.com/${data.room_info.room_id}`,
     cover_url: data.room_info.cover.replace("http://", "https://"),
@@ -117,13 +118,13 @@ axios.get(`https://gh.nana7mi.link/live.LiveRoom(21452505).get_room_info()`).the
   cards.value.push(info)
 })
 
-function TaskWaitAll(args: Array<String>) {
-  function getPicture(bv: String) {
-    return axios.get(`https://gh.nana7mi.link/video.Video(${bv}).get_info().pic?max_age=2592000`).then(
-      res => {
+function TaskWaitAll(args: Array<string>) {
+  function getPicture(bv: string) {
+    return get_video_pic(bv, 2592000).then(
+      data => {
         let pic: Picture = {
           link: `https://www.bilibili.com/video/${bv}`,
-          url: res.data.data.replace("http://", "https://")
+          url: data.replace("http://", "https://")
         }
         return pic
       }
@@ -140,8 +141,8 @@ function getName(uid: number) {
   if (uid == 0) return ""
   if (!uid2name[uid]) {
     uid2name[uid] = uid
-    axios.get(`https://gh.nana7mi.link/user.User(${uid}).get_user_info().name?max_age=86400`).then(
-      res => uid2name[uid] = res.data.data + " "
+    get_user_name(uid, 86400).then(
+      data => uid2name[uid] = data + " "
     ).catch(console.log)
   }
   return uid2name[uid]

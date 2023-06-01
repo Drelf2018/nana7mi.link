@@ -33,6 +33,7 @@
 import axios from 'axios'
 import jsYaml from 'js-yaml'
 
+import { get_download_url, get_user_info } from '../aliyun'
 import { ApiUrl, Theme, faceInfo, NoticePost } from '../components/tool'
 import { ref, Ref, PropType } from 'vue'
 
@@ -128,8 +129,8 @@ async function NewPost() {
       else if (FuturePosts.value[0].time != post.time) FuturePosts.value.unshift(post)
       else return
       LastPostTime = post.time + 1
-      let res = await axios.get("https://gh.nana7mi.link/video.Video(bvid=BV1ty4y1E7w9).get_download_url(0:int,html5=1).durl")
-      Phone.value.play(res.data.data[0].url)
+      let data = await get_download_url("BV1ty4y1E7w9")
+      Phone.value.play(data[0].url)
       NoticePost(post)
       setTimeout(() => searchHandler(""), 30)
     })
@@ -158,8 +159,7 @@ async function getWatch(url: string) {
 
 // 获取用户头像
 async function getFace() {
-  let res = await axios.get(`https://gh.nana7mi.link/user.User(${uid.value}).get_user_info()`)
-  let data = res.data.data
+  let data = await get_user_info(uid.value)
   let info: faceInfo = {
     face_href: "/user",
     face_url: data.face,
